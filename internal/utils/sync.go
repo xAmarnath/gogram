@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/amarnathcjd/gogram/internal/encoding/tl"
+	"github.com/xamarnath/gogram/internal/encoding/tl"
 )
 
 type SyncSetInt struct {

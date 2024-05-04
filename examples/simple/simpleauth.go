@@ -1,7 +1,7 @@
 package main
 
 import (
-	tg "github.com/amarnathcjd/gogram/telegram"
+	tg "github.com/xamarnath/gogram/telegram"
 )
 
 func main() {

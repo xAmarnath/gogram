@@ -5,7 +5,7 @@ import "C"
 import (
 	"fmt"
 
-	"github.com/amarnathcjd/gogram/telegram"
+	"github.com/xamarnath/gogram/telegram"
 )
 
 // media.Video = &VideoDescription{

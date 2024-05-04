@@ -10,10 +10,10 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	ige "github.com/amarnathcjd/gogram/internal/aes_ige"
-	"github.com/amarnathcjd/gogram/internal/encoding/tl"
-	"github.com/amarnathcjd/gogram/internal/utils"
 	"github.com/pkg/errors"
+	ige "github.com/xamarnath/gogram/internal/aes_ige"
+	"github.com/xamarnath/gogram/internal/encoding/tl"
+	"github.com/xamarnath/gogram/internal/utils"
 )
 
 // Common это сообщение (зашифрованое либо открытое) которыми общаются между собой клиент и сервер

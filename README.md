@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://github.com/amarnathcjd/gogram">
+    <a href="https://github.com/xamarnath/gogram">
         <img src="https://i.imgur.com/RE1M0sM.png" alt="Gogram" width="256">
     </a>
     <br>
@@ -13,7 +13,7 @@
         Docs
     </a>
     •
-    <a href="https://github.com/amarnathcjd/gogram/releases">
+    <a href="https://github.com/xamarnath/gogram/releases">
         Releases
     </a>
     •
@@ -28,22 +28,22 @@
 
 ## Status
 
-[![GoDoc](https://godoc.org/github.com/amarnathcjd/gogram?status.svg)](https://godoc.org/github.com/amarnathcjd/gogram)
-[![Go Report Card](https://goreportcard.com/badge/github.com/amarnathcjd/gogram)](https://goreportcard.com/report/github.com/amarnathcjd/gogram)
-[![License](https://img.shields.io/github/license/amarnathcjd/gogram.svg)](https://img.shields.io/github/license/amarnathcjd/gogram.svg)
-[![GitHub stars](https://img.shields.io/github/stars/amarnathcjd/gogram.svg?style=social&label=Stars)](
-    https://img.shields.io/github/license/amarnathcjd/gogram.svg?style=social&label=Stars)
-[![GitHub forks](https://img.shields.io/github/forks/amarnathcjd/gogram.svg?style=social&label=Fork)](
-    https://img.shields.io/github/license/amarnathcjd/gogram.svg?style=social&label=Fork)
-[![GitHub issues](https://img.shields.io/github/issues/amarnathcjd/gogram.svg)](
-    https://img.shields.io/github/license/amarnathcjd/gogram.svg
+[![GoDoc](https://godoc.org/github.com/xamarnath/gogram?status.svg)](https://godoc.org/github.com/xamarnath/gogram)
+[![Go Report Card](https://goreportcard.com/badge/github.com/xamarnath/gogram)](https://goreportcard.com/report/github.com/xamarnath/gogram)
+[![License](https://img.shields.io/github/license/xamarnath/gogram.svg)](https://img.shields.io/github/license/xamarnath/gogram.svg)
+[![GitHub stars](https://img.shields.io/github/stars/xamarnath/gogram.svg?style=social&label=Stars)](
+    https://img.shields.io/github/license/xamarnath/gogram.svg?style=social&label=Stars)
+[![GitHub forks](https://img.shields.io/github/forks/xamarnath/gogram.svg?style=social&label=Fork)](
+    https://img.shields.io/github/license/xamarnath/gogram.svg?style=social&label=Fork)
+[![GitHub issues](https://img.shields.io/github/issues/xamarnath/gogram.svg)](
+    https://img.shields.io/github/license/xamarnath/gogram.svg
 )
 
 
 ``` golang
 package main
 
-import "github.com/amarnathcjd/gogram/telegram"
+import "github.com/xamarnath/gogram/telegram"
 
 func main() {
     client, err := telegram.NewClient(&telegram.ClientConfig{
@@ -72,7 +72,7 @@ identity (bot API alternative) using Go.
 
 If you'd like to support Gogram, you can consider:
 
-- [Become a GitHub sponsor](https://github.com/sponsors/amarnathcjd).
+- [Become a GitHub sponsor](https://github.com/sponsors/xamarnath).
 
 ## Key Features
 
@@ -90,7 +90,7 @@ If you'd like to support Gogram, you can consider:
 ## Installing
 
 ``` bash
-go get -u github.com/amarnathcjd/gogram/telegram
+go get -u github.com/xamarnath/gogram/telegram
 ```
 
 ## Doing Stuff

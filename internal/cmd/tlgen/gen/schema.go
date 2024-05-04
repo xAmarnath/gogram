@@ -3,7 +3,7 @@ package gen
 import (
 	"strings"
 
-	"github.com/amarnathcjd/gogram/internal/cmd/tlgen/tlparser"
+	"github.com/xamarnath/gogram/internal/cmd/tlgen/tlparser"
 )
 
 // для понимания как преобразовано название типа

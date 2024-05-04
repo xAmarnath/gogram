@@ -18,14 +18,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/amarnathcjd/gogram/internal/encoding/tl"
-	"github.com/amarnathcjd/gogram/internal/mode"
-	"github.com/amarnathcjd/gogram/internal/mtproto/messages"
-	"github.com/amarnathcjd/gogram/internal/mtproto/objects"
-	"github.com/amarnathcjd/gogram/internal/session"
-	"github.com/amarnathcjd/gogram/internal/transport"
-	"github.com/amarnathcjd/gogram/internal/utils"
 	"github.com/pkg/errors"
+	"github.com/xamarnath/gogram/internal/encoding/tl"
+	"github.com/xamarnath/gogram/internal/mode"
+	"github.com/xamarnath/gogram/internal/mtproto/messages"
+	"github.com/xamarnath/gogram/internal/mtproto/objects"
+	"github.com/xamarnath/gogram/internal/session"
+	"github.com/xamarnath/gogram/internal/transport"
+	"github.com/xamarnath/gogram/internal/utils"
 )
 
 const defaultTimeout = 30 * time.Second

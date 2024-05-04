@@ -13,9 +13,9 @@ import (
 	"strconv"
 	"strings"
 
-	ige "github.com/amarnathcjd/gogram/internal/aes_ige"
-	"github.com/amarnathcjd/gogram/internal/utils"
 	"github.com/pkg/errors"
+	ige "github.com/xamarnath/gogram/internal/aes_ige"
+	"github.com/xamarnath/gogram/internal/utils"
 )
 
 var DataCenters = map[int]string{

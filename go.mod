@@ -1,4 +1,4 @@
-module github.com/amarnathcjd/gogram
+module github.com/xamarnath/gogram
 
 go 1.22.1
 

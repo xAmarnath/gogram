@@ -11,12 +11,12 @@ import (
 	"log"
 	"math/big"
 
-	ige "github.com/amarnathcjd/gogram/internal/aes_ige"
-	"github.com/amarnathcjd/gogram/internal/encoding/tl"
-	"github.com/amarnathcjd/gogram/internal/keys"
-	"github.com/amarnathcjd/gogram/internal/math"
-	"github.com/amarnathcjd/gogram/internal/mtproto/objects"
 	"github.com/pkg/errors"
+	ige "github.com/xamarnath/gogram/internal/aes_ige"
+	"github.com/xamarnath/gogram/internal/encoding/tl"
+	"github.com/xamarnath/gogram/internal/keys"
+	"github.com/xamarnath/gogram/internal/math"
+	"github.com/xamarnath/gogram/internal/mtproto/objects"
 )
 
 // https://core.telegram.org/mtproto/auth_key

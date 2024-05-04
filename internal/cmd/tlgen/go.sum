@@ -1,5 +1,5 @@
-github.com/amarnathcjd/gogram v0.0.0-20240104124909-6536dce75830 h1:V4btMTJuEujOjW4Yo8zKAHBoI56f39Zf5ePAcnF1+NA=
-github.com/amarnathcjd/gogram v0.0.0-20240104124909-6536dce75830/go.mod h1:rFhZ9/ddkh6746YV1gL03f9myM4c5JYo0+bWIPRu4EU=
+github.com/xamarnath/gogram v0.0.0-20240104124909-6536dce75830 h1:V4btMTJuEujOjW4Yo8zKAHBoI56f39Zf5ePAcnF1+NA=
+github.com/xamarnath/gogram v0.0.0-20240104124909-6536dce75830/go.mod h1:rFhZ9/ddkh6746YV1gL03f9myM4c5JYo0+bWIPRu4EU=
 github.com/dave/jennifer v1.4.1 h1:XyqG6cn5RQsTj3qlWQTKlRGAyrTcsk1kUmWdZBzRjDw=
 github.com/dave/jennifer v1.4.1/go.mod h1:7jEdnm+qBcxl8PC0zyp7vxcpSRnzXSt9r39tpTVGlwA=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=

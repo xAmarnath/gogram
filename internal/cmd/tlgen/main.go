@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/amarnathcjd/gogram/internal/cmd/tlgen/gen"
-	"github.com/amarnathcjd/gogram/internal/cmd/tlgen/tlparser"
+	"github.com/xamarnath/gogram/internal/cmd/tlgen/gen"
+	"github.com/xamarnath/gogram/internal/cmd/tlgen/tlparser"
 )
 
 const (
@@ -26,7 +26,7 @@ var (
 	}
 )
 
-const helpMsg = `welcome to gogram's TL generator (c) @amarnathcjd`
+const helpMsg = `welcome to gogram's TL generator (c) @xamarnath`
 
 func main() {
 	if len(os.Args) == 0 || len(os.Args) == 1 {
@@ -141,7 +141,7 @@ func root(tlfile, outdir string) error {
 		return fmt.Errorf("parse schema file: %w", err)
 	}
 
-	g, err := gen.NewGenerator(schema, "(c) @amarnathcjd", outdir)
+	g, err := gen.NewGenerator(schema, "(c) @xamarnath", outdir)
 	if err != nil {
 		return err
 	}
