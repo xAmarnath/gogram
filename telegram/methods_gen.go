@@ -8700,13 +8700,13 @@ func (c *Client) MessagesForwardMessage(peer InputPeer, id int32, randomID int64
 }
 
 type MessagesForwardMessagesParams struct {
-	Silent             bool                    `tl:"flag:5,encoded_in_bitflags"`
-	Background         bool                    `tl:"flag:6,encoded_in_bitflags"`
-	WithMyScore        bool                    `tl:"flag:8,encoded_in_bitflags"`
-	DropAuthor         bool                    `tl:"flag:11,encoded_in_bitflags"`
-	DropMediaCaptions  bool                    `tl:"flag:12,encoded_in_bitflags"`
-	Noforwards         bool                    `tl:"flag:14,encoded_in_bitflags"`
-	AllowPaidFloodskip bool                    `tl:"flag:19,encoded_in_bitflags"`
+	Silent             bool `tl:"flag:5,encoded_in_bitflags"`
+	Background         bool `tl:"flag:6,encoded_in_bitflags"`
+	WithMyScore        bool `tl:"flag:8,encoded_in_bitflags"`
+	DropAuthor         bool `tl:"flag:11,encoded_in_bitflags"`
+	DropMediaCaptions  bool `tl:"flag:12,encoded_in_bitflags"`
+	Noforwards         bool `tl:"flag:14,encoded_in_bitflags"`
+	AllowPaidFloodskip bool `tl:"flag:19,encoded_in_bitflags"`
 	FromPeer           InputPeer
 	ID                 []int32
 	RandomID           []int64
