@@ -895,21 +895,22 @@ func (*ChannelsSendAsPeers) CRC() uint32 {
 
 // Represents the rights of an admin in a channel/supergroup.
 type ChatAdminRights struct {
-	ChangeInfo     bool `tl:"flag:0,encoded_in_bitflags"`
-	PostMessages   bool `tl:"flag:1,encoded_in_bitflags"`
-	EditMessages   bool `tl:"flag:2,encoded_in_bitflags"`
-	DeleteMessages bool `tl:"flag:3,encoded_in_bitflags"`
-	BanUsers       bool `tl:"flag:4,encoded_in_bitflags"`
-	InviteUsers    bool `tl:"flag:5,encoded_in_bitflags"`
-	PinMessages    bool `tl:"flag:7,encoded_in_bitflags"`
-	AddAdmins      bool `tl:"flag:9,encoded_in_bitflags"`
-	Anonymous      bool `tl:"flag:10,encoded_in_bitflags"`
-	ManageCall     bool `tl:"flag:11,encoded_in_bitflags"`
-	Other          bool `tl:"flag:12,encoded_in_bitflags"`
-	ManageTopics   bool `tl:"flag:13,encoded_in_bitflags"`
-	PostStories    bool `tl:"flag:14,encoded_in_bitflags"`
-	EditStories    bool `tl:"flag:15,encoded_in_bitflags"`
-	DeleteStories  bool `tl:"flag:16,encoded_in_bitflags"`
+	ChangeInfo           bool `tl:"flag:0,encoded_in_bitflags"`
+	PostMessages         bool `tl:"flag:1,encoded_in_bitflags"`
+	EditMessages         bool `tl:"flag:2,encoded_in_bitflags"`
+	DeleteMessages       bool `tl:"flag:3,encoded_in_bitflags"`
+	BanUsers             bool `tl:"flag:4,encoded_in_bitflags"`
+	InviteUsers          bool `tl:"flag:5,encoded_in_bitflags"`
+	PinMessages          bool `tl:"flag:7,encoded_in_bitflags"`
+	AddAdmins            bool `tl:"flag:9,encoded_in_bitflags"`
+	Anonymous            bool `tl:"flag:10,encoded_in_bitflags"`
+	ManageCall           bool `tl:"flag:11,encoded_in_bitflags"`
+	Other                bool `tl:"flag:12,encoded_in_bitflags"`
+	ManageTopics         bool `tl:"flag:13,encoded_in_bitflags"`
+	PostStories          bool `tl:"flag:14,encoded_in_bitflags"`
+	EditStories          bool `tl:"flag:15,encoded_in_bitflags"`
+	DeleteStories        bool `tl:"flag:16,encoded_in_bitflags"`
+	ManageDirectMessages bool
 }
 
 func (*ChatAdminRights) CRC() uint32 {
@@ -3037,13 +3038,14 @@ func (*PaymentsStarsRevenueAdsAccountURL) CRC() uint32 {
 
 // Star revenue statistics, see here » for more info.
 type PaymentsStarsRevenueStats struct {
-	RevenueGraph StatsGraph
-	Status       *StarsRevenueStatus
-	UsdRate      float64
+	TopHoursGraph StatsGraph
+	RevenueGraph  StatsGraph
+	Status        *StarsRevenueStatus
+	UsdRate       float64
 }
 
 func (*PaymentsStarsRevenueStats) CRC() uint32 {
-	return 0xc92bb73b
+	return 0x6c207376
 }
 
 // Contains the URL to use to withdraw Telegram Star revenue.
@@ -3057,7 +3059,7 @@ func (*PaymentsStarsRevenueWithdrawalURL) CRC() uint32 {
 
 // Info about the current Telegram Star subscriptions, balance and transaction history ».
 type PaymentsStarsStatus struct {
-	Balance                     *StarsAmount
+	Balance                     StarsAmount
 	Subscriptions               []*StarsSubscription `tl:"flag:1"`
 	SubscriptionsNextOffset     string               `tl:"flag:2"`
 	SubscriptionsMissingBalance int64                `tl:"flag:4"`
@@ -3800,23 +3802,25 @@ func (*SmsjobsStatus) FlagIndex() int {
 
 // A sponsored message.
 type SponsoredMessage struct {
-	Recommended    bool `tl:"flag:5,encoded_in_bitflags"`
-	CanReport      bool `tl:"flag:12,encoded_in_bitflags"`
-	RandomID       []byte
-	URL            string
-	Title          string
-	Message        string
-	Entities       []MessageEntity `tl:"flag:1"`
-	Photo          Photo           `tl:"flag:6"`
-	Media          MessageMedia    `tl:"flag:14"`
-	Color          *PeerColor      `tl:"flag:13"`
-	ButtonText     string
-	SponsorInfo    string `tl:"flag:7"`
-	AdditionalInfo string `tl:"flag:8"`
+	Recommended        bool `tl:"flag:5,encoded_in_bitflags"`
+	CanReport          bool `tl:"flag:12,encoded_in_bitflags"`
+	RandomID           []byte
+	URL                string
+	Title              string
+	Message            string
+	Entities           []MessageEntity `tl:"flag:1"`
+	Photo              Photo           `tl:"flag:6"`
+	Media              MessageMedia    `tl:"flag:14"`
+	Color              *PeerColor      `tl:"flag:13"`
+	ButtonText         string
+	SponsorInfo        string `tl:"flag:7"`
+	AdditionalInfo     string `tl:"flag:8"`
+	MinDisplayDuration int32  `tl:"flag:15"`
+	MaxDisplayDuration int32  `tl:"flag:15"`
 }
 
 func (*SponsoredMessage) CRC() uint32 {
-	return 0x4d93a990
+	return 0x7dbf8673
 }
 
 func (*SponsoredMessage) FlagIndex() int {
@@ -3861,9 +3865,9 @@ func (*StarGiftAttributeCounter) CRC() uint32 {
 type StarRefProgram struct {
 	BotID               int64
 	CommissionPermille  int32
-	DurationMonths      int32        `tl:"flag:0"`
-	EndDate             int32        `tl:"flag:1"`
-	DailyRevenuePerUser *StarsAmount `tl:"flag:2"`
+	DurationMonths      int32       `tl:"flag:0"`
+	EndDate             int32       `tl:"flag:1"`
+	DailyRevenuePerUser StarsAmount `tl:"flag:2"`
 }
 
 func (*StarRefProgram) CRC() uint32 {
@@ -3872,16 +3876,6 @@ func (*StarRefProgram) CRC() uint32 {
 
 func (*StarRefProgram) FlagIndex() int {
 	return 0
-}
-
-// Describes a real (i.e. possibly decimal) amount of Telegram Stars.
-type StarsAmount struct {
-	Amount int64
-	Nanos  int32
-}
-
-func (*StarsAmount) CRC() uint32 {
-	return 0xbbb6b4a3
 }
 
 // Telegram Stars gift option.
@@ -3939,9 +3933,9 @@ func (*StarsGiveawayWinnersOption) FlagIndex() int {
 // Describes Telegram Star revenue balances ».
 type StarsRevenueStatus struct {
 	WithdrawalEnabled bool `tl:"flag:0,encoded_in_bitflags"`
-	CurrentBalance    *StarsAmount
-	AvailableBalance  *StarsAmount
-	OverallRevenue    *StarsAmount
+	CurrentBalance    StarsAmount
+	AvailableBalance  StarsAmount
+	OverallRevenue    StarsAmount
 	NextWithdrawalAt  int32 `tl:"flag:1"`
 }
 
@@ -4012,14 +4006,14 @@ type StarsTransaction struct {
 	Gift                      bool `tl:"flag:10,encoded_in_bitflags"`
 	Reaction                  bool `tl:"flag:11,encoded_in_bitflags"`
 	Subscription              bool `tl:"flag:12,encoded_in_bitflags"`
-	BusinessTransfer          bool `tl:"flag:21,encoded_in_bitflags"`
 	Floodskip                 bool `tl:"flag:15,encoded_in_bitflags"`
 	StargiftUpgrade           bool `tl:"flag:18,encoded_in_bitflags"`
 	PaidMessage               bool `tl:"flag:19,encoded_in_bitflags"`
 	PremiumGift               bool `tl:"flag:20,encoded_in_bitflags"`
+	BusinessTransfer          bool `tl:"flag:21,encoded_in_bitflags"`
 	StargiftResale            bool `tl:"flag:22,encoded_in_bitflags"`
 	ID                        string
-	Stars                     *StarsAmount
+	Amount                    StarsAmount
 	Date                      int32
 	Peer                      StarsTransactionPeer
 	Title                     string         `tl:"flag:0"`
@@ -4036,13 +4030,15 @@ type StarsTransaction struct {
 	FloodskipNumber           int32          `tl:"flag:15"`
 	StarrefCommissionPermille int32          `tl:"flag:16"`
 	StarrefPeer               Peer           `tl:"flag:17"`
-	StarrefAmount             *StarsAmount   `tl:"flag:17"`
+	StarrefAmount             StarsAmount    `tl:"flag:17"`
 	PaidMessages              int32          `tl:"flag:19"`
 	PremiumGiftMonths         int32          `tl:"flag:20"`
+	AdsProceedsFromDate       int32
+	AdsProceedsToDate         int32
 }
 
 func (*StarsTransaction) CRC() uint32 {
-	return 0xa39fd94a
+	return 0x13659eb0
 }
 
 func (*StarsTransaction) FlagIndex() int {
@@ -4457,6 +4453,17 @@ func (*StoryViews) FlagIndex() int {
 	return 0
 }
 
+type SuggestedPost struct {
+	Accepted     bool
+	Rejected     bool
+	Price        StarsAmount
+	ScheduleDate int32
+}
+
+func (*SuggestedPost) CRC() uint32 {
+	return 0xe8e37e5
+}
+
 // Styled text with message entities
 type TextWithEntities struct {
 	Text     string
@@ -4517,6 +4524,40 @@ type Timezone struct {
 
 func (*Timezone) CRC() uint32 {
 	return 0xff9289f5
+}
+
+type TodoCompletion struct {
+	ID          int32
+	CompletedBy int64
+	Date        int32
+}
+
+func (*TodoCompletion) CRC() uint32 {
+	return 0x4cc120b7
+}
+
+type TodoItem struct {
+	ID    int32
+	Title *TextWithEntities
+}
+
+func (*TodoItem) CRC() uint32 {
+	return 0xcba9a52f
+}
+
+type TodoList struct {
+	OthersCanAppend   bool `tl:"flag:0,encoded_in_bitflags"`
+	OthersCanComplete bool `tl:"flag:1,encoded_in_bitflags"`
+	Title             *TextWithEntities
+	List              []*TodoItem
+}
+
+func (*TodoList) CRC() uint32 {
+	return 0x49b92a26
+}
+
+func (*TodoList) FlagIndex() int {
+	return 0
 }
 
 // Top peer
