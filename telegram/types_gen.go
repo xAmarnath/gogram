@@ -638,6 +638,34 @@ func (*BroadcastRevenueBalances) FlagIndex() int {
 	return 0
 }
 
+type BroadcastRevenueStats struct {
+	TopHoursGraph StatsGraph
+	RevenueGraph  StatsGraph
+	Balances      *BroadcastRevenueBalances
+	UsdRate       float64
+}
+
+func (*BroadcastRevenueStats) CRC() uint32 {
+	return 0x5407e297
+}
+
+type BroadcastRevenueTransactions struct {
+	Count        int32
+	Transactions []BroadcastRevenueTransaction
+}
+
+func (*BroadcastRevenueTransactions) CRC() uint32 {
+	return 0x87158466
+}
+
+type BroadcastRevenueWithdrawalURL struct {
+	URL string
+}
+
+func (*BroadcastRevenueWithdrawalURL) CRC() uint32 {
+	return 0xec659737
+}
+
 // Describes a Telegram Business away message, automatically sent to users writing to us when we're offline, during closing hours, while we're on vacation, or in some other custom time period when we cannot immediately answer to the user.
 type BusinessAwayMessage struct {
 	OfflineOnly bool `tl:"flag:0,encoded_in_bitflags"`
@@ -910,7 +938,7 @@ type ChatAdminRights struct {
 	PostStories          bool `tl:"flag:14,encoded_in_bitflags"`
 	EditStories          bool `tl:"flag:15,encoded_in_bitflags"`
 	DeleteStories        bool `tl:"flag:16,encoded_in_bitflags"`
-	ManageDirectMessages bool
+	ManageDirectMessages bool `tl:"flag:17,encoded_in_bitflags"`
 }
 
 func (*ChatAdminRights) CRC() uint32 {
@@ -3038,7 +3066,7 @@ func (*PaymentsStarsRevenueAdsAccountURL) CRC() uint32 {
 
 // Star revenue statistics, see here » for more info.
 type PaymentsStarsRevenueStats struct {
-	TopHoursGraph StatsGraph
+	TopHoursGraph StatsGraph `tl:"flag:0"`
 	RevenueGraph  StatsGraph
 	Status        *StarsRevenueStatus
 	UsdRate       float64
@@ -3046,6 +3074,10 @@ type PaymentsStarsRevenueStats struct {
 
 func (*PaymentsStarsRevenueStats) CRC() uint32 {
 	return 0x6c207376
+}
+
+func (*PaymentsStarsRevenueStats) FlagIndex() int {
+	return 0
 }
 
 // Contains the URL to use to withdraw Telegram Star revenue.
@@ -4033,8 +4065,8 @@ type StarsTransaction struct {
 	StarrefAmount             StarsAmount    `tl:"flag:17"`
 	PaidMessages              int32          `tl:"flag:19"`
 	PremiumGiftMonths         int32          `tl:"flag:20"`
-	AdsProceedsFromDate       int32
-	AdsProceedsToDate         int32
+	AdsProceedsFromDate       int32          `tl:"flag:23"`
+	AdsProceedsToDate         int32          `tl:"flag:23"`
 }
 
 func (*StarsTransaction) CRC() uint32 {
@@ -4043,37 +4075,6 @@ func (*StarsTransaction) CRC() uint32 {
 
 func (*StarsTransaction) FlagIndex() int {
 	return 0
-}
-
-// Channel revenue ad statistics, see here » for more info.
-type StatsBroadcastRevenueStats struct {
-	TopHoursGraph StatsGraph
-	RevenueGraph  StatsGraph
-	Balances      *BroadcastRevenueBalances
-	UsdRate       float64
-}
-
-func (*StatsBroadcastRevenueStats) CRC() uint32 {
-	return 0x5407e297
-}
-
-// Channel ad revenue transactions ».
-type StatsBroadcastRevenueTransactions struct {
-	Count        int32
-	Transactions []BroadcastRevenueTransaction
-}
-
-func (*StatsBroadcastRevenueTransactions) CRC() uint32 {
-	return 0x87158466
-}
-
-// Contains the URL to use to withdraw channel ad revenue.
-type StatsBroadcastRevenueWithdrawalURL struct {
-	URL string
-}
-
-func (*StatsBroadcastRevenueWithdrawalURL) CRC() uint32 {
-	return 0xec659737
 }
 
 // Channel statistics.
@@ -4454,14 +4455,18 @@ func (*StoryViews) FlagIndex() int {
 }
 
 type SuggestedPost struct {
-	Accepted     bool
-	Rejected     bool
-	Price        StarsAmount
-	ScheduleDate int32
+	Accepted     bool        `tl:"flag:1,encoded_in_bitflags"`
+	Rejected     bool        `tl:"flag:2,encoded_in_bitflags"`
+	Price        StarsAmount `tl:"flag:3"`
+	ScheduleDate int32       `tl:"flag:0"`
 }
 
 func (*SuggestedPost) CRC() uint32 {
 	return 0xe8e37e5
+}
+
+func (*SuggestedPost) FlagIndex() int {
+	return 0
 }
 
 // Styled text with message entities

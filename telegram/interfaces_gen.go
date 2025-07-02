@@ -392,7 +392,7 @@ func (*BroadcastRevenueTransactionProceeds) ImplementsBroadcastRevenueTransactio
 // Describes a refund for failed withdrawal of ad earnings »
 type BroadcastRevenueTransactionRefund struct {
 	Amount   int64  // Amount refunded.
-	Date     int32  // Date of refund.
+	FromDate int32  // Date of refund.
 	Provider string // Payment provider name.
 }
 
@@ -1490,8 +1490,8 @@ type ChannelFull struct {
 	ViewForumAsMessages    bool `tl:"flag2:6,encoded_in_bitflags"`
 	RestrictedSponsored    bool `tl:"flag2:11,encoded_in_bitflags"`
 	CanViewRevenue         bool `tl:"flag2:12,encoded_in_bitflags"`
-	CanViewStarsRevenue    bool `tl:"flag2:15,encoded_in_bitflags"`
 	PaidMediaAllowed       bool `tl:"flag2:14,encoded_in_bitflags"`
+	CanViewStarsRevenue    bool `tl:"flag2:15,encoded_in_bitflags"`
 	PaidReactionsAvailable bool `tl:"flag2:16,encoded_in_bitflags"`
 	StargiftsAvailable     bool `tl:"flag2:19,encoded_in_bitflags"`
 	PaidMessagesAvailable  bool `tl:"flag2:20,encoded_in_bitflags"`
@@ -1538,7 +1538,7 @@ type ChannelFull struct {
 	Emojiset               *StickerSet      `tl:"flag2:10"`
 	BotVerification        *BotVerification `tl:"flag2:17"`
 	StargiftsCount         int32            `tl:"flag2:18"`
-	SendPaidMessagesStars  int64
+	SendPaidMessagesStars  int64            `tl:"flag2:21"`
 }
 
 func (*ChannelFull) CRC() uint32 {
@@ -2126,8 +2126,8 @@ type DraftMessageObj struct {
 	Entities      []MessageEntity `tl:"flag:3"`
 	Media         InputMedia      `tl:"flag:5"`
 	Date          int32
-	Effect        int64 `tl:"flag:7"`
-	SuggestedPost *SuggestedPost
+	Effect        int64          `tl:"flag:7"`
+	SuggestedPost *SuggestedPost `tl:"flag:8"`
 }
 
 func (*DraftMessageObj) CRC() uint32 {
@@ -4433,10 +4433,11 @@ type InputReplyToMessage struct {
 	QuoteEntities   []MessageEntity `tl:"flag:3"`
 	QuoteOffset     int32           `tl:"flag:4"`
 	MonoforumPeerID InputPeer       `tl:"flag:5"`
+	TodoItemID      int32           `tl:"flag:6"`
 }
 
 func (*InputReplyToMessage) CRC() uint32 {
-	return 0xb07038b0
+	return 0x869fbe10
 }
 
 func (*InputReplyToMessage) FlagIndex() int {
@@ -4644,6 +4645,14 @@ func (*InputStickerSetShortName) CRC() uint32 {
 }
 
 func (*InputStickerSetShortName) ImplementsInputStickerSet() {}
+
+type InputStickerSetTonGifts struct{}
+
+func (*InputStickerSetTonGifts) CRC() uint32 {
+	return 0x1cf671a0
+}
+
+func (*InputStickerSetTonGifts) ImplementsInputStickerSet() {}
 
 type InputStickeredMedia interface {
 	tl.Object
@@ -5524,8 +5533,8 @@ type MessageObj struct {
 	InvertMedia             bool `tl:"flag:27,encoded_in_bitflags"`
 	Offline                 bool `tl:"flag2:1,encoded_in_bitflags"`
 	VideoProcessingPending  bool `tl:"flag2:4,encoded_in_bitflags"`
-	PaidSuggestedPostStars  bool
-	PaidSuggestedPostTon    bool
+	PaidSuggestedPostStars  bool `tl:"flag2:8,encoded_in_bitflags"`
+	PaidSuggestedPostTon    bool `tl:"flag2:9,encoded_in_bitflags"`
 	ID                      int32
 	FromID                  Peer  `tl:"flag:8"`
 	FromBoostsApplied       int32 `tl:"flag:29"`
@@ -5554,7 +5563,7 @@ type MessageObj struct {
 	Factcheck               *FactCheck           `tl:"flag2:3"`
 	ReportDeliveryUntilDate int32                `tl:"flag2:5"`
 	PaidMessageStars        int64                `tl:"flag2:6"`
-	SuggestedPost           *SuggestedPost
+	SuggestedPost           *SuggestedPost       `tl:"flag2:7"`
 }
 
 func (*MessageObj) CRC() uint32 {
@@ -5588,10 +5597,10 @@ type MessageService struct {
 	Out                  bool `tl:"flag:1,encoded_in_bitflags"`
 	Mentioned            bool `tl:"flag:4,encoded_in_bitflags"`
 	MediaUnread          bool `tl:"flag:5,encoded_in_bitflags"`
+	ReactionsArePossible bool `tl:"flag:9,encoded_in_bitflags"`
 	Silent               bool `tl:"flag:13,encoded_in_bitflags"`
 	Post                 bool `tl:"flag:14,encoded_in_bitflags"`
 	Legacy               bool `tl:"flag:19,encoded_in_bitflags"`
-	ReactionsArePossible bool `tl:"flag:9,encoded_in_bitflags"`
 	ID                   int32
 	FromID               Peer `tl:"flag:8"`
 	PeerID               Peer
@@ -5916,11 +5925,15 @@ type MessageActionGiftTon struct {
 	Amount         int64
 	CryptoCurrency string
 	CryptoAmount   int64
-	TransactionID  string
+	TransactionID  string `tl:"flag:0"`
 }
 
 func (*MessageActionGiftTon) CRC() uint32 {
 	return 0xa8a3c699
+}
+
+func (*MessageActionGiftTon) FlagIndex() int {
+	return 0
 }
 
 func (*MessageActionGiftTon) ImplementsMessageAction() {}
@@ -6329,23 +6342,33 @@ func (*MessageActionSuggestProfilePhoto) CRC() uint32 {
 func (*MessageActionSuggestProfilePhoto) ImplementsMessageAction() {}
 
 type MessageActionSuggestedPostApproval struct {
-	Rejected      bool
-	BalanceTooLow bool
-	RejectComment string
-	ScheduleDate  int32
-	Price         StarsAmount
+	Rejected      bool        `tl:"flag:0,encoded_in_bitflags"`
+	BalanceTooLow bool        `tl:"flag:1,encoded_in_bitflags"`
+	RejectComment string      `tl:"flag:2"`
+	ScheduleDate  int32       `tl:"flag:3"`
+	Price         StarsAmount `tl:"flag:4"`
 }
 
 func (*MessageActionSuggestedPostApproval) CRC() uint32 {
 	return 0xee7a1596
 }
 
+func (*MessageActionSuggestedPostApproval) FlagIndex() int {
+	return 0
+}
+
 func (*MessageActionSuggestedPostApproval) ImplementsMessageAction() {}
 
-type MessageActionSuggestedPostRefund struct{}
+type MessageActionSuggestedPostRefund struct {
+	PayerInitiated bool `tl:"flag:0,encoded_in_bitflags"`
+}
 
 func (*MessageActionSuggestedPostRefund) CRC() uint32 {
 	return 0x69f916f8
+}
+
+func (*MessageActionSuggestedPostRefund) FlagIndex() int {
+	return 0
 }
 
 func (*MessageActionSuggestedPostRefund) ImplementsMessageAction() {}
@@ -7117,21 +7140,22 @@ type MessageReplyHeader interface {
 
 // Message replies and thread information
 type MessageReplyHeaderObj struct {
-	ReplyToScheduled bool              `tl:"flag:2,encoded_in_bitflags"` // This is a reply to a scheduled message.
-	ForumTopic       bool              `tl:"flag:3,encoded_in_bitflags"` // Whether this message was sent in a forum topic (except for the General topic).
-	Quote            bool              `tl:"flag:9,encoded_in_bitflags"` // Whether this message is quoting a part of another message.
-	ReplyToMsgID     int32             `tl:"flag:4"`                     // ID of message to which this message is replying
-	ReplyToPeerID    Peer              `tl:"flag:0"`                     // For replies sent in channel discussion threads of which the current user is not a member, the discussion group ID
-	ReplyFrom        *MessageFwdHeader `tl:"flag:5"`                     // When replying to a message sent by a certain peer to another chat, contains info about the peer that originally sent the message to that other chat.
-	ReplyMedia       MessageMedia      `tl:"flag:8"`                     // When replying to a media sent by a certain peer to another chat, contains the media of the replied-to message.
-	ReplyToTopID     int32             `tl:"flag:1"`                     // ID of the message that started this message thread
-	QuoteText        string            `tl:"flag:6"`                     // Used to quote-reply to only a certain section (specified here) of the original message.
-	QuoteEntities    []MessageEntity   `tl:"flag:7"`                     // Message entities for styled text from the quote_text field.
-	QuoteOffset      int32             `tl:"flag:10"`                    // Offset of the message quote_text within the original message (in UTF-16 code units).
+	ReplyToScheduled bool              `tl:"flag:2,encoded_in_bitflags"`
+	ForumTopic       bool              `tl:"flag:3,encoded_in_bitflags"`
+	Quote            bool              `tl:"flag:9,encoded_in_bitflags"`
+	ReplyToMsgID     int32             `tl:"flag:4"`
+	ReplyToPeerID    Peer              `tl:"flag:0"`
+	ReplyFrom        *MessageFwdHeader `tl:"flag:5"`
+	ReplyMedia       MessageMedia      `tl:"flag:8"`
+	ReplyToTopID     int32             `tl:"flag:1"`
+	QuoteText        string            `tl:"flag:6"`
+	QuoteEntities    []MessageEntity   `tl:"flag:7"`
+	QuoteOffset      int32             `tl:"flag:10"`
+	TodoItemID       int32             `tl:"flag:11"`
 }
 
 func (*MessageReplyHeaderObj) CRC() uint32 {
-	return 0xafbc09db
+	return 0x6917560b
 }
 
 func (*MessageReplyHeaderObj) FlagIndex() int {
@@ -9613,10 +9637,11 @@ type StarGiftObj struct {
 	UpgradeStars        int64  `tl:"flag:3"`
 	ResellMinStars      int64  `tl:"flag:4"`
 	Title               string `tl:"flag:5"`
+	ReleasedBy          Peer   `tl:"flag:6"`
 }
 
 func (*StarGiftObj) CRC() uint32 {
-	return 0xc62aca28
+	return 0x7f853c12
 }
 
 func (*StarGiftObj) FlagIndex() int {
@@ -9638,10 +9663,11 @@ type StarGiftUnique struct {
 	AvailabilityTotal  int32
 	GiftAddress        string `tl:"flag:3"`
 	ResellStars        int64  `tl:"flag:4"`
+	ReleasedBy         Peer   `tl:"flag:5"`
 }
 
 func (*StarGiftUnique) CRC() uint32 {
-	return 0x6411db89
+	return 0xf63778ae
 }
 
 func (*StarGiftUnique) FlagIndex() int {
@@ -10453,18 +10479,6 @@ func (*UpdateBotWebhookJsonQuery) CRC() uint32 {
 
 func (*UpdateBotWebhookJsonQuery) ImplementsUpdate() {}
 
-// A new channel ad revenue transaction was made, see here » for more info.
-type UpdateBroadcastRevenueTransactions struct {
-	Peer     Peer                      // Channel
-	Balances *BroadcastRevenueBalances // New ad revenue balance.
-}
-
-func (*UpdateBroadcastRevenueTransactions) CRC() uint32 {
-	return 0xdfd961f5
-}
-
-func (*UpdateBroadcastRevenueTransactions) ImplementsUpdate() {}
-
 // A callback button sent via a business connection was pressed, and the button data was sent to the bot that created the button.
 type UpdateBusinessBotCallbackQuery struct {
 	QueryID        int64   // Query ID
@@ -11253,6 +11267,22 @@ func (*UpdateMessageReactions) FlagIndex() int {
 }
 
 func (*UpdateMessageReactions) ImplementsUpdate() {}
+
+type UpdateMonoForumNoPaidException struct {
+	Exception   bool `tl:"flag:0,encoded_in_bitflags"`
+	ChannelID   int64
+	SavedPeerID Peer
+}
+
+func (*UpdateMonoForumNoPaidException) CRC() uint32 {
+	return 0x9f812b08
+}
+
+func (*UpdateMonoForumNoPaidException) FlagIndex() int {
+	return 0
+}
+
+func (*UpdateMonoForumNoPaidException) ImplementsUpdate() {}
 
 // A stickerset was just moved to top, see here for more info »
 type UpdateMoveStickerSetToTop struct {
@@ -14822,8 +14852,10 @@ type PaymentsStarGifts interface {
 
 // Available gifts ».
 type PaymentsStarGiftsObj struct {
-	Hash  int32      // Hash used for caching, for more info click here
-	Gifts []StarGift // List of available gifts.
+	Hash  int32
+	Gifts []StarGift
+	Chats []Chat
+	Users []User
 }
 
 func (*PaymentsStarGiftsObj) CRC() uint32 {
