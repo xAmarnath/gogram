@@ -9,7 +9,7 @@ import (
 
 // Fill these with your real credentials before running.
 const (
-	appID    = 6              // your api_id from my.telegram.org
+	appID    = 6               // your api_id from my.telegram.org
 	appHash  = "YOUR_APP_HASH" // your api_hash from my.telegram.org
 	botToken = "YOUR_BOT_TOKEN"
 )
