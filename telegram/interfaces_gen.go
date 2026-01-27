@@ -1342,12 +1342,13 @@ func (*Channel) ImplementsChat() {}
 
 // Indicates a channel/supergroup we can't access because we were banned, or for some other reason.
 type ChannelForbidden struct {
-	Broadcast  bool   `tl:"flag:5,encoded_in_bitflags"` // Is this a channel
-	Megagroup  bool   `tl:"flag:8,encoded_in_bitflags"` // Is this a supergroup
-	ID         int64  // Channel ID
-	AccessHash int64  // Access hash
-	Title      string // Title
-	UntilDate  int32  `tl:"flag:16"` // The ban is valid until the specified date
+	Broadcast  bool `tl:"flag:5,encoded_in_bitflags"`
+	Megagroup  bool `tl:"flag:8,encoded_in_bitflags"`
+	Monoforum  bool `tl:"flag:10,encoded_in_bitflags"`
+	ID         int64
+	AccessHash int64
+	Title      string
+	UntilDate  int32 `tl:"flag:16"`
 }
 
 func (*ChannelForbidden) CRC() uint32 {
@@ -6529,10 +6530,11 @@ type MessageActionStarGiftUnique struct {
 	CanTransferAt            int32       `tl:"flag:9"`
 	CanResellAt              int32       `tl:"flag:10"`
 	DropOriginalDetailsStars int64       `tl:"flag:12"`
+	CanCraftAt               int32       `tl:"flag:15"`
 }
 
 func (*MessageActionStarGiftUnique) CRC() uint32 {
-	return 0x95728543
+	return 0xe6c31522
 }
 
 func (*MessageActionStarGiftUnique) FlagIndex() int {
@@ -9970,34 +9972,37 @@ func (*StarGiftObj) ImplementsStarGift() {}
 
 // Represents a collectible star gift
 type StarGiftUnique struct {
-	RequirePremium     bool `tl:"flag:6,encoded_in_bitflags"`
-	ResaleTonOnly      bool `tl:"flag:7,encoded_in_bitflags"`
-	ThemeAvailable     bool `tl:"flag:9,encoded_in_bitflags"`
-	ID                 int64
-	GiftID             int64
-	Title              string
-	Slug               string
-	Num                int32
-	OwnerID            Peer   `tl:"flag:0"`
-	OwnerName          string `tl:"flag:1"`
-	OwnerAddress       string `tl:"flag:2"`
-	Attributes         []StarGiftAttribute
-	AvailabilityIssued int32
-	AvailabilityTotal  int32
-	GiftAddress        string        `tl:"flag:3"`
-	ResellAmount       []StarsAmount `tl:"flag:4"`
-	ReleasedBy         Peer          `tl:"flag:5"`
-	ValueAmount        int64         `tl:"flag:8"`
-	ValueCurrency      string        `tl:"flag:8"`
-	ValueUsdAmount     int64         `tl:"flag:8"`
-	ThemePeer          Peer          `tl:"flag:10"`
-	PeerColor          PeerColor     `tl:"flag:11"`
-	HostID             Peer          `tl:"flag:12"`
-	OfferMinStars      int32         `tl:"flag:13"`
+	RequirePremium      bool `tl:"flag:6,encoded_in_bitflags"`
+	ResaleTonOnly       bool `tl:"flag:7,encoded_in_bitflags"`
+	ThemeAvailable      bool `tl:"flag:9,encoded_in_bitflags"`
+	Burned              bool `tl:"flag:14,encoded_in_bitflags"`
+	Crafted             bool `tl:"flag:15,encoded_in_bitflags"`
+	ID                  int64
+	GiftID              int64
+	Title               string
+	Slug                string
+	Num                 int32
+	OwnerID             Peer   `tl:"flag:0"`
+	OwnerName           string `tl:"flag:1"`
+	OwnerAddress        string `tl:"flag:2"`
+	Attributes          []StarGiftAttribute
+	AvailabilityIssued  int32
+	AvailabilityTotal   int32
+	GiftAddress         string        `tl:"flag:3"`
+	ResellAmount        []StarsAmount `tl:"flag:4"`
+	ReleasedBy          Peer          `tl:"flag:5"`
+	ValueAmount         int64         `tl:"flag:8"`
+	ValueCurrency       string        `tl:"flag:8"`
+	ValueUsdAmount      int64         `tl:"flag:8"`
+	ThemePeer           Peer          `tl:"flag:10"`
+	PeerColor           PeerColor     `tl:"flag:11"`
+	HostID              Peer          `tl:"flag:12"`
+	OfferMinStars       int32         `tl:"flag:13"`
+	CraftChancePermille int32         `tl:"flag:16"`
 }
 
 func (*StarGiftUnique) CRC() uint32 {
-	return 0x569d64c9
+	return 0x85f0a9cd
 }
 
 func (*StarGiftUnique) FlagIndex() int {
@@ -10013,30 +10018,35 @@ type StarGiftAttribute interface {
 
 // The backdrop of a collectible gift.
 type StarGiftAttributeBackdrop struct {
-	Name           string // Name of the backdrop
-	BackdropID     int32  // Unique ID of the backdrop
-	CenterColor    int32  // Color of the center of the backdrop in RGB24 format.
-	EdgeColor      int32  // Color of the edges of the backdrop in RGB24 format.
-	PatternColor   int32  // Color of the starGiftAttributePattern applied on the backdrop in RGB24 format.
-	TextColor      int32  // Color of the text on the backdrop in RGB24 format.
-	RarityPermille int32  // The number of upgraded gifts that receive this backdrop for each 1000 gifts upgraded.
+	Name         string                  // Name of the backdrop
+	BackdropID   int32                   // Unique ID of the backdrop
+	CenterColor  int32                   // Color of the center of the backdrop in RGB24 format.
+	EdgeColor    int32                   // Color of the edges of the backdrop in RGB24 format.
+	PatternColor int32                   // Color of the starGiftAttributePattern applied on the backdrop in RGB24 format.
+	TextColor    int32                   // Color of the text on the backdrop in RGB24 format.
+	Rarity       StarGiftAttributeRarity // The number of upgraded gifts that receive this backdrop for each 1000 gifts upgraded.
 }
 
 func (*StarGiftAttributeBackdrop) CRC() uint32 {
-	return 0xd93d859c
+	return 0x9f2504e4
 }
 
 func (*StarGiftAttributeBackdrop) ImplementsStarGiftAttribute() {}
 
 // The model of a collectible gift.
 type StarGiftAttributeModel struct {
-	Name           string   // Name of the model
-	Document       Document // The sticker representing the upgraded gift
-	RarityPermille int32    // The number of upgraded gifts that receive this backdrop for each 1000 gifts upgraded.
+	Crafted  bool `tl:"flag:0,encoded_in_bitflags"`
+	Name     string
+	Document Document
+	Rarity   StarGiftAttributeRarity
 }
 
 func (*StarGiftAttributeModel) CRC() uint32 {
-	return 0x39d99013
+	return 0x565251e2
+}
+
+func (*StarGiftAttributeModel) FlagIndex() int {
+	return 0
 }
 
 func (*StarGiftAttributeModel) ImplementsStarGiftAttribute() {}
@@ -10061,13 +10071,13 @@ func (*StarGiftAttributeOriginalDetails) ImplementsStarGiftAttribute() {}
 
 // A sticker applied on the backdrop of a collectible gift using a repeating pattern.
 type StarGiftAttributePattern struct {
-	Name           string   // Name of the symbol
-	Document       Document // The symbol
-	RarityPermille int32    // The number of upgraded gifts that receive this backdrop for each 1000 gifts upgraded.
+	Name     string                  // Name of the symbol
+	Document Document                // The symbol
+	Rarity   StarGiftAttributeRarity // The number of upgraded gifts that receive this backdrop for each 1000 gifts upgraded.
 }
 
 func (*StarGiftAttributePattern) CRC() uint32 {
-	return 0x13acff19
+	return 0x4e7085ea
 }
 
 func (*StarGiftAttributePattern) ImplementsStarGiftAttribute() {}
@@ -10109,6 +10119,44 @@ func (*StarGiftAttributeIDPattern) CRC() uint32 {
 }
 
 func (*StarGiftAttributeIDPattern) ImplementsStarGiftAttributeID() {}
+
+type StarGiftAttributeRarity interface {
+	tl.Object
+	ImplementsStarGiftAttributeRarity()
+}
+type StarGiftAttributeRarityObj struct {
+	Permille int32
+}
+
+func (*StarGiftAttributeRarityObj) CRC() uint32 {
+	return 0x36437737
+}
+
+func (*StarGiftAttributeRarityObj) ImplementsStarGiftAttributeRarity() {}
+
+type StarGiftAttributeRarityEpic struct{}
+
+func (*StarGiftAttributeRarityEpic) CRC() uint32 {
+	return 0x78fbf3a8
+}
+
+func (*StarGiftAttributeRarityEpic) ImplementsStarGiftAttributeRarity() {}
+
+type StarGiftAttributeRarityLegendary struct{}
+
+func (*StarGiftAttributeRarityLegendary) CRC() uint32 {
+	return 0xcef7e7a8
+}
+
+func (*StarGiftAttributeRarityLegendary) ImplementsStarGiftAttributeRarity() {}
+
+type StarGiftAttributeRarityRare struct{}
+
+func (*StarGiftAttributeRarityRare) CRC() uint32 {
+	return 0xf08d516b
+}
+
+func (*StarGiftAttributeRarityRare) ImplementsStarGiftAttributeRarity() {}
 
 type StarGiftAuctionRound interface {
 	tl.Object
@@ -12420,6 +12468,14 @@ func (*UpdateStarGiftAuctionUserState) CRC() uint32 {
 
 func (*UpdateStarGiftAuctionUserState) ImplementsUpdate() {}
 
+type UpdateStarGiftCraftFail struct{}
+
+func (*UpdateStarGiftCraftFail) CRC() uint32 {
+	return 0xac072444
+}
+
+func (*UpdateStarGiftCraftFail) ImplementsUpdate() {}
+
 // The current account's Telegram Stars balance has changed.
 type UpdateStarsBalance struct {
 	Balance StarsAmount // New balance.
@@ -12804,11 +12860,15 @@ type URLAuthResult interface {
 
 // Details about an accepted authorization request, for more info click here
 type URLAuthResultAccepted struct {
-	URL string // The URL name of the website on which the user has logged in.
+	URL string `tl:"flag:0"`
 }
 
 func (*URLAuthResultAccepted) CRC() uint32 {
-	return 0x8f8c0e4e
+	return 0x623a8fa0
+}
+
+func (*URLAuthResultAccepted) FlagIndex() int {
+	return 0
 }
 
 func (*URLAuthResultAccepted) ImplementsURLAuthResult() {}
@@ -12824,13 +12884,18 @@ func (*URLAuthResultDefault) ImplementsURLAuthResult() {}
 
 // Details about the authorization request, for more info click here
 type URLAuthResultRequest struct {
-	RequestWriteAccess bool   `tl:"flag:0,encoded_in_bitflags"` // Whether the bot would like to send messages to the user
-	Bot                User   // Username of a bot, which will be used for user authorization. If not specified, the current bot's username will be assumed. The url's domain must be the same as the domain linked with the bot. See Linking your domain to the bot for more details.
-	Domain             string // The domain name of the website on which the user will log in.
+	RequestWriteAccess bool `tl:"flag:0,encoded_in_bitflags"`
+	RequestPhoneNumber bool `tl:"flag:1,encoded_in_bitflags"`
+	Bot                User
+	Domain             string
+	Browser            string `tl:"flag:2"`
+	Platform           string `tl:"flag:2"`
+	Ip                 string `tl:"flag:2"`
+	Region             string `tl:"flag:2"`
 }
 
 func (*URLAuthResultRequest) CRC() uint32 {
-	return 0x92d33a0e
+	return 0x32fabf1a
 }
 
 func (*URLAuthResultRequest) FlagIndex() int {
@@ -12846,52 +12911,53 @@ type User interface {
 
 // Indicates info about a certain user.
 type UserObj struct {
-	Self                  bool `tl:"flag:10,encoded_in_bitflags"`
-	Contact               bool `tl:"flag:11,encoded_in_bitflags"`
-	MutualContact         bool `tl:"flag:12,encoded_in_bitflags"`
-	Deleted               bool `tl:"flag:13,encoded_in_bitflags"`
-	Bot                   bool `tl:"flag:14,encoded_in_bitflags"`
-	BotChatHistory        bool `tl:"flag:15,encoded_in_bitflags"`
-	BotNochats            bool `tl:"flag:16,encoded_in_bitflags"`
-	Verified              bool `tl:"flag:17,encoded_in_bitflags"`
-	Restricted            bool `tl:"flag:18,encoded_in_bitflags"`
-	Min                   bool `tl:"flag:20,encoded_in_bitflags"`
-	BotInlineGeo          bool `tl:"flag:21,encoded_in_bitflags"`
-	Support               bool `tl:"flag:23,encoded_in_bitflags"`
-	Scam                  bool `tl:"flag:24,encoded_in_bitflags"`
-	ApplyMinPhoto         bool `tl:"flag:25,encoded_in_bitflags"`
-	Fake                  bool `tl:"flag:26,encoded_in_bitflags"`
-	BotAttachMenu         bool `tl:"flag:27,encoded_in_bitflags"`
-	Premium               bool `tl:"flag:28,encoded_in_bitflags"`
-	AttachMenuEnabled     bool `tl:"flag:29,encoded_in_bitflags"`
-	BotCanEdit            bool `tl:"flag2:1,encoded_in_bitflags"`
-	CloseFriend           bool `tl:"flag2:2,encoded_in_bitflags"`
-	StoriesHidden         bool `tl:"flag2:3,encoded_in_bitflags"`
-	StoriesUnavailable    bool `tl:"flag2:4,encoded_in_bitflags"`
-	ContactRequirePremium bool `tl:"flag2:10,encoded_in_bitflags"`
-	BotBusiness           bool `tl:"flag2:11,encoded_in_bitflags"`
-	BotHasMainApp         bool `tl:"flag2:13,encoded_in_bitflags"`
-	BotForumView          bool `tl:"flag2:16,encoded_in_bitflags"`
-	ID                    int64
-	AccessHash            int64                `tl:"flag:0"`
-	FirstName             string               `tl:"flag:1"`
-	LastName              string               `tl:"flag:2"`
-	Username              string               `tl:"flag:3"`
-	Phone                 string               `tl:"flag:4"`
-	Photo                 UserProfilePhoto     `tl:"flag:5"`
-	Status                UserStatus           `tl:"flag:6"`
-	BotInfoVersion        int32                `tl:"flag:14"`
-	RestrictionReason     []*RestrictionReason `tl:"flag:18"`
-	BotInlinePlaceholder  string               `tl:"flag:19"`
-	LangCode              string               `tl:"flag:22"`
-	EmojiStatus           EmojiStatus          `tl:"flag:30"`
-	Usernames             []*Username          `tl:"flag2:0"`
-	StoriesMaxID          *RecentStory         `tl:"flag2:5"`
-	Color                 PeerColor            `tl:"flag2:8"`
-	ProfileColor          PeerColor            `tl:"flag2:9"`
-	BotActiveUsers        int32                `tl:"flag2:12"`
-	BotVerificationIcon   int64                `tl:"flag2:14"`
-	SendPaidMessagesStars int64                `tl:"flag2:15"`
+	Self                    bool `tl:"flag:10,encoded_in_bitflags"`
+	Contact                 bool `tl:"flag:11,encoded_in_bitflags"`
+	MutualContact           bool `tl:"flag:12,encoded_in_bitflags"`
+	Deleted                 bool `tl:"flag:13,encoded_in_bitflags"`
+	Bot                     bool `tl:"flag:14,encoded_in_bitflags"`
+	BotChatHistory          bool `tl:"flag:15,encoded_in_bitflags"`
+	BotNochats              bool `tl:"flag:16,encoded_in_bitflags"`
+	Verified                bool `tl:"flag:17,encoded_in_bitflags"`
+	Restricted              bool `tl:"flag:18,encoded_in_bitflags"`
+	Min                     bool `tl:"flag:20,encoded_in_bitflags"`
+	BotInlineGeo            bool `tl:"flag:21,encoded_in_bitflags"`
+	Support                 bool `tl:"flag:23,encoded_in_bitflags"`
+	Scam                    bool `tl:"flag:24,encoded_in_bitflags"`
+	ApplyMinPhoto           bool `tl:"flag:25,encoded_in_bitflags"`
+	Fake                    bool `tl:"flag:26,encoded_in_bitflags"`
+	BotAttachMenu           bool `tl:"flag:27,encoded_in_bitflags"`
+	Premium                 bool `tl:"flag:28,encoded_in_bitflags"`
+	AttachMenuEnabled       bool `tl:"flag:29,encoded_in_bitflags"`
+	BotCanEdit              bool `tl:"flag2:1,encoded_in_bitflags"`
+	CloseFriend             bool `tl:"flag2:2,encoded_in_bitflags"`
+	StoriesHidden           bool `tl:"flag2:3,encoded_in_bitflags"`
+	StoriesUnavailable      bool `tl:"flag2:4,encoded_in_bitflags"`
+	ContactRequirePremium   bool `tl:"flag2:10,encoded_in_bitflags"`
+	BotBusiness             bool `tl:"flag2:11,encoded_in_bitflags"`
+	BotHasMainApp           bool `tl:"flag2:13,encoded_in_bitflags"`
+	BotForumView            bool `tl:"flag2:16,encoded_in_bitflags"`
+	BotForumCanManageTopics bool `tl:"flag2:17,encoded_in_bitflags"`
+	ID                      int64
+	AccessHash              int64                `tl:"flag:0"`
+	FirstName               string               `tl:"flag:1"`
+	LastName                string               `tl:"flag:2"`
+	Username                string               `tl:"flag:3"`
+	Phone                   string               `tl:"flag:4"`
+	Photo                   UserProfilePhoto     `tl:"flag:5"`
+	Status                  UserStatus           `tl:"flag:6"`
+	BotInfoVersion          int32                `tl:"flag:14"`
+	RestrictionReason       []*RestrictionReason `tl:"flag:18"`
+	BotInlinePlaceholder    string               `tl:"flag:19"`
+	LangCode                string               `tl:"flag:22"`
+	EmojiStatus             EmojiStatus          `tl:"flag:30"`
+	Usernames               []*Username          `tl:"flag2:0"`
+	StoriesMaxID            *RecentStory         `tl:"flag2:5"`
+	Color                   PeerColor            `tl:"flag2:8"`
+	ProfileColor            PeerColor            `tl:"flag2:9"`
+	BotActiveUsers          int32                `tl:"flag2:12"`
+	BotVerificationIcon     int64                `tl:"flag2:14"`
+	SendPaidMessagesStars   int64                `tl:"flag2:15"`
 }
 
 func (*UserObj) CRC() uint32 {

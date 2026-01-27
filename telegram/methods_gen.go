@@ -5063,6 +5063,27 @@ func (c *Client) ChannelsGetFullChannel(channel InputChannel) (*MessagesChatFull
 	return resp, nil
 }
 
+type ChannelsGetFutureCreatorAfterLeaveParams struct {
+	Channel InputChannel
+}
+
+func (*ChannelsGetFutureCreatorAfterLeaveParams) CRC() uint32 {
+	return 0xa00918af
+}
+
+func (c *Client) ChannelsGetFutureCreatorAfterLeave(channel InputChannel) (User, error) {
+	responseData, err := c.MakeRequest(&ChannelsGetFutureCreatorAfterLeaveParams{Channel: channel})
+	if err != nil {
+		return nil, fmt.Errorf("sending ChannelsGetFutureCreatorAfterLeave: %w", err)
+	}
+
+	resp, ok := responseData.(User)
+	if !ok {
+		return nil, fmt.Errorf("got invalid response type: %s", reflect.TypeOf(responseData))
+	}
+	return resp, nil
+}
+
 type ChannelsGetGroupsForDiscussionParams struct{}
 
 func (*ChannelsGetGroupsForDiscussionParams) CRC() uint32 {
@@ -7847,11 +7868,12 @@ func (c *Client) MessagesAcceptEncryption(peer *InputEncryptedChat, gB []byte, k
 }
 
 type MessagesAcceptURLAuthParams struct {
-	WriteAllowed bool      `tl:"flag:0,encoded_in_bitflags"`
-	Peer         InputPeer `tl:"flag:1"`
-	MsgID        int32     `tl:"flag:1"`
-	ButtonID     int32     `tl:"flag:1"`
-	URL          string    `tl:"flag:2"`
+	WriteAllowed     bool      `tl:"flag:0,encoded_in_bitflags"`
+	SharePhoneNumber bool      `tl:"flag:3,encoded_in_bitflags"`
+	Peer             InputPeer `tl:"flag:1"`
+	MsgID            int32     `tl:"flag:1"`
+	ButtonID         int32     `tl:"flag:1"`
+	URL              string    `tl:"flag:2"`
 }
 
 func (*MessagesAcceptURLAuthParams) CRC() uint32 {
@@ -8114,6 +8136,27 @@ func (c *Client) MessagesClickSponsoredMessage(media, fullscreen bool, randomID 
 	resp, ok := responseData.(bool)
 	if !ok {
 		return false, fmt.Errorf("got invalid response type: %s", reflect.TypeOf(responseData))
+	}
+	return resp, nil
+}
+
+type MessagesCraftStarGiftParams struct {
+	Stargift []InputSavedStarGift
+}
+
+func (*MessagesCraftStarGiftParams) CRC() uint32 {
+	return 0xb0f9684f
+}
+
+func (c *Client) MessagesCraftStarGift(stargift []InputSavedStarGift) (Updates, error) {
+	responseData, err := c.MakeRequest(&MessagesCraftStarGiftParams{Stargift: stargift})
+	if err != nil {
+		return nil, fmt.Errorf("sending MessagesCraftStarGift: %w", err)
+	}
+
+	resp, ok := responseData.(Updates)
+	if !ok {
+		return nil, fmt.Errorf("got invalid response type: %s", reflect.TypeOf(responseData))
 	}
 	return resp, nil
 }
@@ -9370,6 +9413,33 @@ func (c *Client) MessagesGetCommonChats(userID InputUser, maxID int64, limit int
 	}
 
 	resp, ok := responseData.(MessagesChats)
+	if !ok {
+		return nil, fmt.Errorf("got invalid response type: %s", reflect.TypeOf(responseData))
+	}
+	return resp, nil
+}
+
+type MessagesGetCraftStarGiftsParams struct {
+	GiftID int64
+	Offset string
+	Limit  int32
+}
+
+func (*MessagesGetCraftStarGiftsParams) CRC() uint32 {
+	return 0xfd05dd00
+}
+
+func (c *Client) MessagesGetCraftStarGifts(giftID int64, offset string, limit int32) (*PaymentsSavedStarGifts, error) {
+	responseData, err := c.MakeRequest(&MessagesGetCraftStarGiftsParams{
+		GiftID: giftID,
+		Limit:  limit,
+		Offset: offset,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("sending MessagesGetCraftStarGifts: %w", err)
+	}
+
+	resp, ok := responseData.(*PaymentsSavedStarGifts)
 	if !ok {
 		return nil, fmt.Errorf("got invalid response type: %s", reflect.TypeOf(responseData))
 	}
@@ -15160,6 +15230,7 @@ func (c *Client) PaymentsGetPremiumGiftCodeOptions(boostPeer InputPeer) ([]*Prem
 type PaymentsGetResaleStarGiftsParams struct {
 	SortByPrice    bool  `tl:"flag:1,encoded_in_bitflags"`
 	SortByNum      bool  `tl:"flag:2,encoded_in_bitflags"`
+	ForCraft       bool  `tl:"flag:4,encoded_in_bitflags"`
 	AttributesHash int64 `tl:"flag:0"`
 	GiftID         int64
 	Attributes     []StarGiftAttributeID `tl:"flag:3"`
