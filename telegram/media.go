@@ -1800,11 +1800,9 @@ func (j *downloadJob) classifyError(ctx context.Context, err error) downloadFail
 		return downloadFailure{kind: downloadErrFlood, err: err, wait: wait}
 	}
 	fatal := []string{
-		"FILE_REFERENCE_EXPIRED",
 		"FILE_REFERENCE_INVALID",
 		"TAKEOUT_INVALID",
 		"LOCATION_INVALID",
-		"LIMIT_INVALID",
 		"OFFSET_INVALID",
 		"FILE_ID_INVALID",
 		"AUTH_BYTES_INVALID",

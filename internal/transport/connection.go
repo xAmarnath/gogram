@@ -36,32 +36,28 @@ func NewTCP(cfg TCPConnConfig) (Conn, bool, error) {
 
 	cfg.Host = strings.TrimPrefix(cfg.Host, ":")
 
-	tcpAddr, err := net.ResolveTCPAddr(tcpPrefix, cfg.Host)
-	if err != nil {
-		return nil, false, fmt.Errorf("resolving tcp addr: %w", err)
-	}
-
 	// Resolve a local address if provided
-	var localAddr *net.TCPAddr
+	var localAddr net.Addr
 	if cfg.LocalAddr != "" {
-		localAddr, err = net.ResolveTCPAddr(tcpPrefix, cfg.LocalAddr)
+		resolved, err := net.ResolveTCPAddr(tcpPrefix, cfg.LocalAddr)
 		if err != nil {
 			return nil, false, fmt.Errorf("resolving local tcp addr: %w", err)
 		}
+		localAddr = resolved
 	}
 
-	conn, err := net.DialTCP(tcpPrefix, localAddr, tcpAddr)
-	// if there is a timeout error, wait 2 secs and retry (only once)
-	if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
-		time.Sleep(2 * time.Second)
-		conn, err = net.DialTCP(tcpPrefix, localAddr, tcpAddr)
-	}
-
+	dialer := net.Dialer{Timeout: cfg.Timeout, LocalAddr: localAddr}
+	rawConn, err := dialer.DialContext(cfg.Ctx, tcpPrefix, cfg.Host)
 	if err != nil {
 		if cfg.Logger != nil {
 			cfg.Logger.WithError(err).Debug("[tcp] connection failed")
 		}
 		return nil, false, fmt.Errorf("dialing tcp: %w", err)
+	}
+	conn, ok := rawConn.(*net.TCPConn)
+	if !ok {
+		rawConn.Close()
+		return nil, false, fmt.Errorf("dialing tcp: unexpected connection type %T", rawConn)
 	}
 
 	conn.SetKeepAlive(true)

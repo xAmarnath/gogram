@@ -625,25 +625,22 @@ func (es *ExSenders) cleanupLoop(done <-chan struct{}) {
 
 func (es *ExSenders) cleanupIdleSenders() {
 	es.Lock()
-	defer es.Unlock()
-
-	for _, senders := range es.senders {
-		for i, sender := range senders {
-			if time.Since(sender.GetLastUsedTime()) > 30*time.Minute {
-				sender.Terminate()
-				senders[i] = nil
-			}
-		}
-	}
-
+	var toTerminate []*ExSender
 	for dcID, senders := range es.senders {
-		var newSenders []*ExSender
+		var keep []*ExSender
 		for _, sender := range senders {
-			if sender != nil {
-				newSenders = append(newSenders, sender)
+			if time.Since(sender.GetLastUsedTime()) > 30*time.Minute {
+				toTerminate = append(toTerminate, sender)
+			} else {
+				keep = append(keep, sender)
 			}
 		}
-		es.senders[dcID] = newSenders
+		es.senders[dcID] = keep
+	}
+	es.Unlock()
+
+	for _, sender := range toTerminate {
+		sender.Terminate()
 	}
 }
 
