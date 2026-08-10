@@ -189,7 +189,8 @@ type MTProto struct {
 	enablePFS      bool
 	pfsKeyLifetime int32
 
-	onMigration func()
+	onMigration         func()
+	onNewSessionCreated func()
 
 	messageTracker       *utils.SyncInt64Int64
 	messageTypesMap      sync.Map // msgID -> request type name
@@ -233,6 +234,8 @@ type Config struct {
 	MaxReconnectDelay    time.Duration // Maximum reconnect delay (default: 15m)
 
 	OnMigration func() // Called after DC migration completes
+
+	OnNewSessionCreated func() // Called when the server issues a new session (salt reset); triggers update re-sync
 }
 
 func NewMTProto(c Config) (*MTProto, error) {
@@ -309,13 +312,14 @@ func NewMTProto(c Config) (*MTProto, error) {
 			MaxAttempts: utils.OrDefault(c.MaxReconnectAttempts, defaultMaxReconnectAttempts),
 			BaseDelay:   utils.OrDefault(c.BaseReconnectDelay, defaultBaseReconnectDelay),
 		},
-		txType:             c.Transport,
-		httpPath:           c.HTTPPath,
-		enablePFS:          c.EnablePFS,
-		pfsKeyLifetime:     c.PFSKeyLifetime,
-		onMigration:        c.OnMigration,
-		messageTracker:     utils.NewSyncInt64Int64(),
-		maxRequestAttempts: 10,
+		txType:              c.Transport,
+		httpPath:            c.HTTPPath,
+		enablePFS:           c.EnablePFS,
+		pfsKeyLifetime:      c.PFSKeyLifetime,
+		onMigration:         c.OnMigration,
+		onNewSessionCreated: c.OnNewSessionCreated,
+		messageTracker:      utils.NewSyncInt64Int64(),
+		maxRequestAttempts:  10,
 	}
 
 	mtproto.SetAddr(c.ServerHost)
@@ -500,6 +504,10 @@ func (m *MTProto) GetTransportType() string {
 
 func (m *MTProto) AppID() int32 {
 	return m.appID
+}
+
+func (m *MTProto) SetOnNewSessionCreated(cb func()) {
+	m.onNewSessionCreated = cb
 }
 
 func (m *MTProto) SetAppID(appID int32) {
@@ -1898,6 +1906,11 @@ messageTypeSwitching:
 		m.updateSalt(msg, message.ServerSalt)
 		if err := m.SaveSession(m.memorySession); err != nil {
 			m.Logger.Debug("failed to save session: %v", err)
+		}
+		if !m.exported && !m.cdn {
+			if cb := m.onNewSessionCreated; cb != nil {
+				go cb()
+			}
 		}
 
 	case *objects.MsgsNewDetailedInfo:
