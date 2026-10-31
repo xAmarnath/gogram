@@ -7,7 +7,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/amarnathcjd/gogram/internal/utils"
+	"github.com/xAmarnath/gogram/internal/utils"
 )
 
 type ConnConfig any

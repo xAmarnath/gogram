@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/amarnathcjd/gogram/internal/encoding/tl"
+	"github.com/xAmarnath/gogram/internal/encoding/tl"
 )
 
 // paddedIntermediate implements the padded intermediate MTProto transport.

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/amarnathcjd/gogram/telegram"
+	"github.com/xAmarnath/gogram/telegram"
 )
 
 // https://gist.github.com/AmarnathCJD/824907f8ec9e7aa9cec8278937fc437b

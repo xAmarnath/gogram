@@ -8,7 +8,7 @@ import (
 	"errors"
 	"math/big"
 
-	ige "github.com/amarnathcjd/gogram/internal/aes_ige"
+	ige "github.com/xAmarnath/gogram/internal/aes_ige"
 )
 
 const KeySize = 256

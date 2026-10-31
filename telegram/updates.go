@@ -16,7 +16,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/amarnathcjd/gogram/internal/encoding/tl"
+	"github.com/xAmarnath/gogram/internal/encoding/tl"
 )
 
 type EventType string

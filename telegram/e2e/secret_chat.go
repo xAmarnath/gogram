@@ -12,9 +12,9 @@ import (
 	"sync"
 	"time"
 
-	aes "github.com/amarnathcjd/gogram/internal/aes_ige"
-	"github.com/amarnathcjd/gogram/internal/encoding/tl"
-	"github.com/amarnathcjd/gogram/internal/utils"
+	aes "github.com/xAmarnath/gogram/internal/aes_ige"
+	"github.com/xAmarnath/gogram/internal/encoding/tl"
+	"github.com/xAmarnath/gogram/internal/utils"
 )
 
 const (

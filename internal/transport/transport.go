@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/amarnathcjd/gogram/internal/encoding/tl"
-	"github.com/amarnathcjd/gogram/internal/mode"
-	"github.com/amarnathcjd/gogram/internal/mtproto/messages"
+	"github.com/xAmarnath/gogram/internal/encoding/tl"
+	"github.com/xAmarnath/gogram/internal/mode"
+	"github.com/xAmarnath/gogram/internal/mtproto/messages"
 )
 
 type Transport interface {

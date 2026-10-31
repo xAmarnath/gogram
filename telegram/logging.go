@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/amarnathcjd/gogram/internal/utils"
+	"github.com/xAmarnath/gogram/internal/utils"
 )
 
 // Logger interface allows users to provide custom logging implementations

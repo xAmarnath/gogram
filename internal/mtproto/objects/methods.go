@@ -9,7 +9,7 @@ import (
 
 	"errors"
 
-	"github.com/amarnathcjd/gogram/internal/encoding/tl"
+	"github.com/xAmarnath/gogram/internal/encoding/tl"
 )
 
 type requester interface {

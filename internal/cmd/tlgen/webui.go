@@ -11,8 +11,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/amarnathcjd/gogram/internal/cmd/tlgen/gen"
-	"github.com/amarnathcjd/gogram/internal/cmd/tlgen/tlparser"
+	"github.com/xAmarnath/gogram/internal/cmd/tlgen/gen"
+	"github.com/xAmarnath/gogram/internal/cmd/tlgen/tlparser"
 )
 
 var (
@@ -609,7 +609,7 @@ footer a:hover{color:var(--accent)}
     </div>
   </div>
 
-  <footer>© 2025 <a href="https://github.com/AmarnathCJD" target="_blank">@AmarnathCJD</a> · <a href="https://github.com/amarnathcjd/gogram" target="_blank">gogram</a></footer>
+  <footer>© 2025 <a href="https://github.com/AmarnathCJD" target="_blank">@AmarnathCJD</a> · <a href="https://github.com/xAmarnath/gogram" target="_blank">gogram</a></footer>
 </div>
 
 <div id="missingTypeModal" class="modal">

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/amarnathcjd/gogram/telegram"
+	"github.com/xAmarnath/gogram/telegram"
 )
 
 const (

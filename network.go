@@ -11,12 +11,12 @@ import (
 	"path/filepath"
 	"reflect"
 
-	"github.com/amarnathcjd/gogram/internal/encoding/tl"
-	"github.com/amarnathcjd/gogram/internal/mtproto/messages"
-	"github.com/amarnathcjd/gogram/internal/mtproto/objects"
-	"github.com/amarnathcjd/gogram/internal/session"
-	"github.com/amarnathcjd/gogram/internal/transport"
-	"github.com/amarnathcjd/gogram/internal/utils"
+	"github.com/xAmarnath/gogram/internal/encoding/tl"
+	"github.com/xAmarnath/gogram/internal/mtproto/messages"
+	"github.com/xAmarnath/gogram/internal/mtproto/objects"
+	"github.com/xAmarnath/gogram/internal/session"
+	"github.com/xAmarnath/gogram/internal/transport"
+	"github.com/xAmarnath/gogram/internal/utils"
 )
 
 // requestPacket preserves an uncertain RPC's identity for server deduplication.

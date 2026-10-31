@@ -24,7 +24,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/amarnathcjd/gogram/telegram"
+	"github.com/xAmarnath/gogram/telegram"
 	"github.com/quic-go/quic-go/http3"
 )
 

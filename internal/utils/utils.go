@@ -18,7 +18,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/amarnathcjd/gogram/internal/encoding/tl"
+	"github.com/xAmarnath/gogram/internal/encoding/tl"
 
 	"io"
 	"io/fs"

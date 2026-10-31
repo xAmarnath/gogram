@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/amarnathcjd/gogram/internal/encoding/tl"
+	"github.com/xAmarnath/gogram/internal/encoding/tl"
 )
 
 type SyncInt64ObjectChan struct {

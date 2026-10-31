@@ -5,7 +5,7 @@ package telegram
 import (
 	"context"
 	"fmt"
-	tl "github.com/amarnathcjd/gogram/internal/encoding/tl"
+	tl "github.com/xAmarnath/gogram/internal/encoding/tl"
 	"reflect"
 )
 

@@ -1,6 +1,6 @@
 package e2e
 
-import "github.com/amarnathcjd/gogram/internal/encoding/tl"
+import "github.com/xAmarnath/gogram/internal/encoding/tl"
 
 func init() {
 	tl.RegisterObjects(

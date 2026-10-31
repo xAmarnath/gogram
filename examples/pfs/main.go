@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/amarnathcjd/gogram/telegram"
+	"github.com/xAmarnath/gogram/telegram"
 )
 
 // Fill these with your real credentials before running.

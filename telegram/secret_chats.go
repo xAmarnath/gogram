@@ -12,8 +12,8 @@ import (
 	"os"
 	"sync"
 
-	"github.com/amarnathcjd/gogram/internal/utils"
-	"github.com/amarnathcjd/gogram/telegram/e2e"
+	"github.com/xAmarnath/gogram/internal/utils"
+	"github.com/xAmarnath/gogram/telegram/e2e"
 )
 
 func mixRandom(serverRandom []byte) []byte {

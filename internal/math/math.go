@@ -10,7 +10,7 @@ import (
 	"math/big"
 	"math/bits"
 
-	ige "github.com/amarnathcjd/gogram/internal/aes_ige"
+	ige "github.com/xAmarnath/gogram/internal/aes_ige"
 )
 
 // DoRSAencrypt encrypts exactly one message block of size 255 bytes using the given public key.

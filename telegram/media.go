@@ -26,9 +26,9 @@ import (
 
 	"errors"
 
-	mtproto "github.com/amarnathcjd/gogram"
-	"github.com/amarnathcjd/gogram/internal/encoding/tl"
-	"github.com/amarnathcjd/gogram/internal/utils"
+	mtproto "github.com/xAmarnath/gogram"
+	"github.com/xAmarnath/gogram/internal/encoding/tl"
+	"github.com/xAmarnath/gogram/internal/utils"
 )
 
 const (

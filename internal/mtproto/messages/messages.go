@@ -12,9 +12,9 @@ import (
 
 	"errors"
 
-	ige "github.com/amarnathcjd/gogram/internal/aes_ige"
-	"github.com/amarnathcjd/gogram/internal/encoding/tl"
-	"github.com/amarnathcjd/gogram/internal/utils"
+	ige "github.com/xAmarnath/gogram/internal/aes_ige"
+	"github.com/xAmarnath/gogram/internal/encoding/tl"
+	"github.com/xAmarnath/gogram/internal/utils"
 )
 
 // Common is a message (either encrypted or unencrypted) used for communication between the client and server.

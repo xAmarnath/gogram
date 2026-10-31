@@ -15,8 +15,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/amarnathcjd/gogram/internal/encoding/tl"
-	"github.com/amarnathcjd/gogram/internal/mtproto/messages"
+	"github.com/xAmarnath/gogram/internal/encoding/tl"
+	"github.com/xAmarnath/gogram/internal/mtproto/messages"
 )
 
 type httpTransport struct {

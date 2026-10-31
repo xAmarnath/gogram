@@ -4,7 +4,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/amarnathcjd/gogram/internal/cmd/tlgen/tlparser"
+	"github.com/xAmarnath/gogram/internal/cmd/tlgen/tlparser"
 )
 
 type goifiedName = string

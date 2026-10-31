@@ -25,7 +25,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/amarnathcjd/gogram/internal/utils"
+	"github.com/xAmarnath/gogram/internal/utils"
 )
 
 const (

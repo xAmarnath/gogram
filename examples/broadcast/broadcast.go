@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/amarnathcjd/gogram/telegram"
+	"github.com/xAmarnath/gogram/telegram"
 )
 
 // Broadcasting to bot users / chats using updates.GetDifference

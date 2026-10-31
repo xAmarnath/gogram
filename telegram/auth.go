@@ -22,7 +22,7 @@ import (
 
 	"errors"
 
-	"github.com/amarnathcjd/gogram/internal/utils"
+	"github.com/xAmarnath/gogram/internal/utils"
 )
 
 var (

@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/amarnathcjd/gogram/telegram"
+	"github.com/xAmarnath/gogram/telegram"
 )
 
 func main() {

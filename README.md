@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://github.com/amarnathcjd/gogram">
+    <a href="https://github.com/xAmarnath/gogram">
         <img src="https://i.imgur.com/RE1M0sM.png" alt="Gogram" width="256">
     </a>
     <br>
@@ -8,7 +8,7 @@
     <b>
     <a href="https://gogram.sbs">documentation</a>
     &nbsp;•&nbsp;
-    <a href="https://github.com/amarnathcjd/gogram/releases">releases</a>
+    <a href="https://github.com/xAmarnath/gogram/releases">releases</a>
     &nbsp;•&nbsp;
     <a href="https://t.me/rosexchat">telegram chat</a>
     </b>
@@ -16,11 +16,11 @@
 
 <div align='center'>
 	
-[![GoDoc](https://godoc.org/github.com/amarnathcjd/gogram?status.svg)](https://godoc.org/github.com/amarnathcjd/gogram)
-[![Go Report Card](https://goreportcard.com/badge/github.com/amarnathcjd/gogram)](https://goreportcard.com/report/github.com/amarnathcjd/gogram)
-[![License](https://img.shields.io/github/license/amarnathcjd/gogram.svg)](https://img.shields.io/github/license/amarnathcjd/gogram.svg)
-[![GitHub stars](https://img.shields.io/github/stars/amarnathcjd/gogram.svg?style=social&label=Stars)](https://img.shields.io/github/stars/amarnathcjd/gogram.svg?style=social&label=Stars)
-[![GitHub forks](https://img.shields.io/github/forks/amarnathcjd/gogram.svg?style=social&label=Fork)](https://img.shields.io/github/forks/amarnathcjd/gogram.svg?style=social&label=Fork)
+[![GoDoc](https://godoc.org/github.com/xAmarnath/gogram?status.svg)](https://godoc.org/github.com/xAmarnath/gogram)
+[![Go Report Card](https://goreportcard.com/badge/github.com/xAmarnath/gogram)](https://goreportcard.com/report/github.com/xAmarnath/gogram)
+[![License](https://img.shields.io/github/license/xAmarnath/gogram.svg)](https://img.shields.io/github/license/xAmarnath/gogram.svg)
+[![GitHub stars](https://img.shields.io/github/stars/xAmarnath/gogram.svg?style=social&label=Stars)](https://img.shields.io/github/stars/xAmarnath/gogram.svg?style=social&label=Stars)
+[![GitHub forks](https://img.shields.io/github/forks/xAmarnath/gogram.svg?style=social&label=Fork)](https://img.shields.io/github/forks/xAmarnath/gogram.svg?style=social&label=Fork)
 
 </div>
 
@@ -43,15 +43,31 @@ identity (bot API alternative) using Go.</p>
 <p>please note that gogram requires Go <b>1.25</b> or later</p>
 
 ```bash
-go get -u github.com/amarnathcjd/gogram/telegram
+go get github.com/xAmarnath/gogram/telegram@v1.8.0-beta.13
 ```
+
+### migrating from the previous module path
+
+Starting with `v1.8.0-beta.13`, the module path is `github.com/xAmarnath/gogram`.
+Update existing imports from `github.com/amarnathcjd/gogram` to
+`github.com/xAmarnath/gogram`, including any subpackages. If you added a temporary
+`replace` directive for the old module, remove it, then install the new version:
+
+```bash
+go mod edit -dropreplace=github.com/amarnathcjd/gogram
+go get github.com/xAmarnath/gogram/telegram@v1.8.0-beta.13
+go mod tidy
+```
+
+Older tags retain the previous module path. Use the explicit version above;
+`@latest` may select an older stable release.
 
 ## quick start
 
 ```golang
 package main
 
-import "github.com/amarnathcjd/gogram/telegram"
+import "github.com/xAmarnath/gogram/telegram"
 
 func main() {
 	client, err := telegram.NewClient(telegram.ClientConfig{

@@ -2,7 +2,7 @@
 
 package e2e
 
-import tl "github.com/amarnathcjd/gogram/internal/encoding/tl"
+import tl "github.com/xAmarnath/gogram/internal/encoding/tl"
 
 // ===== DecryptedMessage (Latest: Layer 73) =====
 type DecryptedMessage interface {

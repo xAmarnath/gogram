@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	tg "github.com/amarnathcjd/gogram/telegram"
+	tg "github.com/xAmarnath/gogram/telegram"
 )
 
 func main() {
@@ -179,7 +179,7 @@ func handleBlocks(m *tg.NewMessage) error {
 					Author:      "Telegram",
 				},
 				{
-					URL:         "https://github.com/amarnathcjd/gogram",
+					URL:         "https://github.com/xAmarnath/gogram",
 					Title:       "gogram",
 					Description: "Go MTProto client used by this bot.",
 					Author:      "amarnathcjd",

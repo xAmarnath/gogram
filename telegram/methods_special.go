@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/amarnathcjd/gogram/internal/encoding/tl"
+	"github.com/xAmarnath/gogram/internal/encoding/tl"
 )
 
 // TLObject is a Telegram request or value that can be encoded in TL.

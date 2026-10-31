@@ -17,12 +17,12 @@ import (
 
 	"errors"
 
-	mtproto "github.com/amarnathcjd/gogram"
+	mtproto "github.com/xAmarnath/gogram"
 
-	"github.com/amarnathcjd/gogram/internal/keys"
-	"github.com/amarnathcjd/gogram/internal/session"
-	"github.com/amarnathcjd/gogram/internal/utils"
-	"github.com/amarnathcjd/gogram/telegram/e2e"
+	"github.com/xAmarnath/gogram/internal/keys"
+	"github.com/xAmarnath/gogram/internal/session"
+	"github.com/xAmarnath/gogram/internal/utils"
+	"github.com/xAmarnath/gogram/telegram/e2e"
 )
 
 const (

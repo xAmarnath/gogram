@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/amarnathcjd/gogram/telegram"
+	"github.com/xAmarnath/gogram/telegram"
 )
 
 // MySimpleLogger implements telegram.SimpleLogger with just 8 basic methods
