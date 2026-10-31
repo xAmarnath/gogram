@@ -865,6 +865,27 @@ mediaTypeSwitch:
 				mediaAttributes = append(mediaAttributes, &DocumentAttributeFilename{FileName: fileName})
 			}
 
+			if !attr.ForceDocument {
+				var audio *DocumentAttributeAudio
+				for _, at := range mediaAttributes {
+					if a, ok := at.(*DocumentAttributeAudio); ok {
+						audio = a
+						break
+					}
+				}
+				if audio == nil && mimeType == "audio/ogg" {
+					audio = &DocumentAttributeAudio{}
+					mediaAttributes = append(mediaAttributes, audio)
+				}
+				if audio != nil {
+					if !audio.Voice && mimeType == "audio/ogg" {
+						mimeType = "audio/opus"
+					} else if audio.Voice && mimeType == "audio/mpeg" {
+						mimeType = "audio/ogg"
+					}
+				}
+			}
+
 			uploadedDoc := &InputMediaUploadedDocument{File: mediaFile, MimeType: mimeType, Attributes: mediaAttributes, Thumb: getValueAny(thumbnail, &InputFileObj{}).(InputFile), TtlSeconds: ttl, Spoiler: spoiler, ForceFile: attr.ForceDocument, NosoundVideo: attr.NoSoundVideo, VideoCover: attr.VideoCover, VideoTimestamp: attr.VideoTimestamp, Stickers: attr.Stickers}
 			if attr.Inline {
 				return c.uploadToSelf(uploadedDoc)
@@ -1061,7 +1082,7 @@ func convertPoll(poll *MessageMediaPoll) *InputMediaPoll {
 func GatherMediaMetadata(path string, attrs []DocumentAttribute) ([]DocumentAttribute, int64, error) {
 	var dur float64
 
-	if !IsFfmpegInstalled() {
+	if _, err := exec.LookPath("ffprobe"); err != nil {
 		ext := strings.ToLower(filepath.Ext(path))
 
 		if MimeTypes.IsStreamableFile(path) {

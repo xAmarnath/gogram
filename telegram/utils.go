@@ -12,7 +12,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"reflect"
 	"regexp"
@@ -1205,11 +1204,6 @@ func ResolveBotFileID(fileId string) (MessageMedia, error) {
 		}, nil
 	}
 	return nil, errors.New("failed to resolve file id: unknown file type")
-}
-
-func IsFfmpegInstalled() bool {
-	_, err := exec.LookPath("ffmpeg")
-	return err == nil
 }
 
 func MarshalWithTypeName(v any, noindent ...bool) string {
