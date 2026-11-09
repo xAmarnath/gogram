@@ -3417,6 +3417,10 @@ func extractUpdateMeta(update Update) updateMeta {
 		meta.pts = upd.Pts
 		meta.ptsCount = upd.PtsCount
 		meta.channel = upd.ChannelID
+	case *UpdateMessageWidgetData:
+		meta.pts = upd.Pts
+		meta.ptsCount = upd.PtsCount
+		meta.channel = getChannelIDFromPeer(upd.Peer)
 	case *UpdateFolderPeers:
 		meta.pts = upd.Pts
 		meta.ptsCount = upd.PtsCount
