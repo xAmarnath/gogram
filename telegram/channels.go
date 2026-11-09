@@ -1158,12 +1158,13 @@ type CreateTopicOptions struct {
 	SendAs      any
 }
 
-func (c *Client) EnableForum(channel any, tabs bool) error {
+// EnableForum enables forum functionality. Sidebar defaults to false when omitted.
+func (c *Client) EnableForum(channel any, tabs bool, sidebar ...bool) error {
 	ch, err := c.GetSendableChannel(channel)
 	if err != nil {
 		return err
 	}
-	_, err = c.ChannelsToggleForum(ch, true, tabs)
+	_, err = c.ChannelsToggleForum(ch, true, tabs, getVariadic(sidebar, false))
 	return err
 }
 
@@ -1172,7 +1173,7 @@ func (c *Client) DisableForum(channel any) error {
 	if err != nil {
 		return err
 	}
-	_, err = c.ChannelsToggleForum(ch, false, false)
+	_, err = c.ChannelsToggleForum(ch, false, false, false)
 	return err
 }
 
