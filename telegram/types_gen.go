@@ -1542,6 +1542,20 @@ func (*ExportedMessageLink) CRC() uint32 {
 	return 0x5dab1af4
 }
 
+type ExportedNoPaidMessagesToken struct {
+	Token   string
+	URL     string
+	Expires int32 `tl:"flag:0"`
+}
+
+func (*ExportedNoPaidMessagesToken) CRC() uint32 {
+	return 0x695dd042
+}
+
+func (*ExportedNoPaidMessagesToken) FlagIndex() int {
+	return 0
+}
+
 // Represents a story deep link.
 type ExportedStoryLink struct {
 	Link string
@@ -2250,6 +2264,26 @@ func (*InputThemeSettings) FlagIndex() int {
 	return 0
 }
 
+type InputTonConnectOauthSession struct {
+	SessionID       int64
+	ChallengeAnswer []byte
+	Body            []byte
+	Proof           *WalletOwnershipProof
+}
+
+func (*InputTonConnectOauthSession) CRC() uint32 {
+	return 0x629f66ce
+}
+
+type InputWalletCardSticker struct {
+	Coordinates *MediaAreaCoordinates
+	NftAddress  string
+}
+
+func (*InputWalletCardSticker) CRC() uint32 {
+	return 0x57df45a7
+}
+
 // The document
 type InputWebDocument struct {
 	URL        string
@@ -2672,6 +2706,18 @@ func (*MessagesBotResults) CRC() uint32 {
 }
 
 func (*MessagesBotResults) FlagIndex() int {
+	return 0
+}
+
+type MessagesBotWidgetQueryAnswer struct {
+	Result string `tl:"flag:0"`
+}
+
+func (*MessagesBotWidgetQueryAnswer) CRC() uint32 {
+	return 0x95b73023
+}
+
+func (*MessagesBotWidgetQueryAnswer) FlagIndex() int {
 	return 0
 }
 
@@ -3503,6 +3549,16 @@ type PaymentsStarGiftAuctionState struct {
 
 func (*PaymentsStarGiftAuctionState) CRC() uint32 {
 	return 0x6b39f4ec
+}
+
+type PaymentsStarGiftDepositPayload struct {
+	NftAddress string
+	Payload    []byte
+	Amount     int64
+}
+
+func (*PaymentsStarGiftDepositPayload) CRC() uint32 {
+	return 0x725bb4eb
 }
 
 // List of just the collectible attributes that may appear for a gift type once it's upgraded to a collectible gift.
@@ -4339,6 +4395,19 @@ func (*SendAsPeer) CRC() uint32 {
 
 func (*SendAsPeer) FlagIndex() int {
 	return 0
+}
+
+type ShareThemeBackdropOption struct {
+	BackdropID   int32
+	Name         string
+	CenterColor  int32
+	EdgeColor    int32
+	PatternColor int32
+	TextColor    int32
+}
+
+func (*ShareThemeBackdropOption) CRC() uint32 {
+	return 0x45c1d652
 }
 
 // Shipping option
@@ -5441,10 +5510,12 @@ type UserFull struct {
 	SavedMusic               Document                 `tl:"flag2:21"`
 	Note                     *TextWithEntities        `tl:"flag2:22"`
 	BotManagerID             int64                    `tl:"flag2:25"`
+	WalletCard               *WalletCard              `tl:"flag2:19"`
+	ShareTheme               ShareTheme               `tl:"flag2:27"`
 }
 
 func (*UserFull) CRC() uint32 {
-	return 0x6cbe645
+	return 0xb90c2afd
 }
 
 func (*UserFull) FlagIndex() int {
@@ -5453,6 +5524,21 @@ func (*UserFull) FlagIndex() int {
 
 func (*UserFull) FlagIndex2() int {
 	return 13
+}
+
+type UserWallet struct {
+	Address   string
+	Balance   int64
+	PublicKey []byte `tl:"flag:0"`
+	StateInit []byte `tl:"flag:0"`
+}
+
+func (*UserWallet) CRC() uint32 {
+	return 0x454d2737
+}
+
+func (*UserWallet) FlagIndex() int {
+	return 0
 }
 
 // Contains information about a username.
@@ -5502,6 +5588,30 @@ func (*WallPaperSettings) CRC() uint32 {
 
 func (*WallPaperSettings) FlagIndex() int {
 	return 0
+}
+
+type WalletCard struct {
+	Stickers  []*WalletCardSticker `tl:"flag:0"`
+	BgNftItem *WalletNftItem       `tl:"flag:1"`
+	Address   string
+	Balance   int64
+}
+
+func (*WalletCard) CRC() uint32 {
+	return 0x8ed043b1
+}
+
+func (*WalletCard) FlagIndex() int {
+	return 0
+}
+
+type WalletCardSticker struct {
+	Coordinates *MediaAreaCoordinates
+	Nft         *WalletNftItem
+}
+
+func (*WalletCardSticker) CRC() uint32 {
+	return 0xf3010cba
 }
 
 type WalletEncryptedSecretPhrasePart struct {
@@ -5556,10 +5666,11 @@ type WalletNftItem struct {
 	Lottie            WebDocument           `tl:"flag:6"`
 	Attributes        []*WalletNftAttribute `tl:"flag:7"`
 	Extra             *DataJson             `tl:"flag:8"`
+	Gift              StarGift              `tl:"flag:9"`
 }
 
 func (*WalletNftItem) CRC() uint32 {
-	return 0x3441fd1c
+	return 0x173dfaf3
 }
 
 func (*WalletNftItem) FlagIndex() int {

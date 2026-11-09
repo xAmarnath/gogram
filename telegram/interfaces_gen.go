@@ -345,6 +345,30 @@ func (*BotInlineMessageText) FlagIndex() int {
 
 func (*BotInlineMessageText) ImplementsBotInlineMessage() {}
 
+type BotInlineMessageWidget struct {
+	InvertMedia    bool `tl:"flag:5,encoded_in_bitflags"`
+	Width          int32
+	Height         int32
+	Payload        []byte
+	PublicData     string      `tl:"flag:0"`
+	PublicDataHash int64       `tl:"flag:0"`
+	ChatData       string      `tl:"flag:1"`
+	ReplyMarkup    ReplyMarkup `tl:"flag:2"`
+	WidgetID       int64       `tl:"flag:3"`
+	Message        string
+	Entities       []MessageEntity `tl:"flag:4"`
+}
+
+func (*BotInlineMessageWidget) CRC() uint32 {
+	return 0xbaa17834
+}
+
+func (*BotInlineMessageWidget) FlagIndex() int {
+	return 0
+}
+
+func (*BotInlineMessageWidget) ImplementsBotInlineMessage() {}
+
 type BotInlineResult interface {
 	tl.Object
 	ImplementsBotInlineResult()
@@ -1455,6 +1479,8 @@ type Channel struct {
 	BroadcastMessagesAllowed bool `tl:"flag2:16,encoded_in_bitflags"`
 	Monoforum                bool `tl:"flag2:17,encoded_in_bitflags"`
 	ForumTabs                bool `tl:"flag2:19,encoded_in_bitflags"`
+	InNews                   bool `tl:"flag2:21,encoded_in_bitflags"`
+	ForumSidebar             bool `tl:"flag2:23,encoded_in_bitflags"`
 	ID                       int64
 	AccessHash               int64 `tl:"flag:13"`
 	Title                    string
@@ -1477,10 +1503,11 @@ type Channel struct {
 	SendPaidMessagesStars    int64                `tl:"flag2:14"`
 	LinkedMonoforumID        int64                `tl:"flag2:18"`
 	LinkedCommunityID        int64                `tl:"flag2:20"`
+	PinnedMsgID              int32                `tl:"flag2:22"`
 }
 
 func (*Channel) CRC() uint32 {
-	return 0xd49f34c6
+	return 0x7ad15240
 }
 
 func (*Channel) FlagIndex() int {
@@ -1685,10 +1712,11 @@ type ChannelFull struct {
 	SendPaidMessagesStars  int64            `tl:"flag2:21"`
 	MainTab                ProfileTab       `tl:"flag2:22"`
 	GuardBotID             int64            `tl:"flag2:23"`
+	ShareTheme             ShareTheme       `tl:"flag2:25"`
 }
 
 func (*ChannelFull) CRC() uint32 {
-	return 0xa04e8d3a
+	return 0xc4c4dd40
 }
 
 func (*ChannelFull) FlagIndex() int {
@@ -3359,6 +3387,49 @@ func (*InputBotInlineMessageText) FlagIndex() int {
 
 func (*InputBotInlineMessageText) ImplementsInputBotInlineMessage() {}
 
+type InputBotInlineMessageWidget struct {
+	AllowQueries bool `tl:"flag:0,encoded_in_bitflags"`
+	SharedWidget bool `tl:"flag:1,encoded_in_bitflags"`
+	InvertMedia  bool `tl:"flag:6,encoded_in_bitflags"`
+	Width        int32
+	Height       int32
+	Html         string
+	PublicData   string      `tl:"flag:2"`
+	ChatData     string      `tl:"flag:3"`
+	ReplyMarkup  ReplyMarkup `tl:"flag:4"`
+	Message      string
+	Entities     []MessageEntity `tl:"flag:5"`
+}
+
+func (*InputBotInlineMessageWidget) CRC() uint32 {
+	return 0xf597a3f0
+}
+
+func (*InputBotInlineMessageWidget) FlagIndex() int {
+	return 0
+}
+
+func (*InputBotInlineMessageWidget) ImplementsInputBotInlineMessage() {}
+
+type InputBotInlineMessageWidgetID struct {
+	InvertMedia bool `tl:"flag:3,encoded_in_bitflags"`
+	WidgetID    int64
+	ChatData    string      `tl:"flag:0"`
+	ReplyMarkup ReplyMarkup `tl:"flag:1"`
+	Message     string
+	Entities    []MessageEntity `tl:"flag:2"`
+}
+
+func (*InputBotInlineMessageWidgetID) CRC() uint32 {
+	return 0xfe8b792b
+}
+
+func (*InputBotInlineMessageWidgetID) FlagIndex() int {
+	return 0
+}
+
+func (*InputBotInlineMessageWidgetID) ImplementsInputBotInlineMessage() {}
+
 type InputBotInlineMessageID interface {
 	tl.Object
 	ImplementsInputBotInlineMessageID()
@@ -4581,6 +4652,41 @@ func (*InputMediaWebPage) FlagIndex() int {
 
 func (*InputMediaWebPage) ImplementsInputMedia() {}
 
+type InputMediaWidget struct {
+	AllowQueries bool `tl:"flag:0,encoded_in_bitflags"`
+	SharedWidget bool `tl:"flag:1,encoded_in_bitflags"`
+	Width        int32
+	Height       int32
+	Html         string
+	PublicData   string `tl:"flag:2"`
+	ChatData     string `tl:"flag:3"`
+}
+
+func (*InputMediaWidget) CRC() uint32 {
+	return 0x44f6c04e
+}
+
+func (*InputMediaWidget) FlagIndex() int {
+	return 0
+}
+
+func (*InputMediaWidget) ImplementsInputMedia() {}
+
+type InputMediaWidgetID struct {
+	WidgetID int64
+	ChatData string `tl:"flag:0"`
+}
+
+func (*InputMediaWidgetID) CRC() uint32 {
+	return 0x7c855cb5
+}
+
+func (*InputMediaWidgetID) FlagIndex() int {
+	return 0
+}
+
+func (*InputMediaWidgetID) ImplementsInputMedia() {}
+
 type InputMessage interface {
 	tl.Object
 	ImplementsInputMessage()
@@ -5055,19 +5161,20 @@ func (*InputReplyToEphemeralMessage) ImplementsInputReplyTo() {}
 
 // Reply to a message.
 type InputReplyToMessage struct {
-	ReplyToMsgID    int32           // The message ID to reply to.
-	TopMsgID        int32           `tl:"flag:0"` // This field must contain the topic ID only when replying to messages in forum topics different from the "General" topic (i.e. `reply_to_msg_id` is set and `reply_to_msg_id != topicID` and `topicID != 1`). If the replied-to message is deleted before the method finishes execution, the value in this field will be used to send the message to the correct topic, instead of the "General" topic.
-	ReplyToPeerID   InputPeer       `tl:"flag:1"` // Used to reply to messages sent to another chat (specified here), can only be used for non-`protected` chats and messages.
-	QuoteText       string          `tl:"flag:2"` // Used to quote-reply to only a certain section (specified here) of the original message. The maximum UTF-8 length for quotes is specified in the quote_length_max config key.
-	QuoteEntities   []MessageEntity `tl:"flag:3"` // Message entities for styled text from the `quote_text` field.
-	QuoteOffset     int32           `tl:"flag:4"` // Offset of the message `quote_text` within the original message (in UTF-16 code units).
-	MonoforumPeerID InputPeer       `tl:"flag:5"` // Must be set to the ID of the topic when replying to a message within a monoforum topic.
-	TodoItemID      int32           `tl:"flag:6"` // Can be set to reply to the specified item of a todo list.
-	PollOption      []byte          `tl:"flag:7"` // If set, sends the message as a reply to a specific poll answer option, containing the `option` bytes of the desired answer.
+	ReplyToMsgID    int32
+	TopMsgID        int32           `tl:"flag:0"`
+	ReplyToPeerID   InputPeer       `tl:"flag:1"`
+	QuoteText       string          `tl:"flag:2"`
+	QuoteEntities   []MessageEntity `tl:"flag:3"`
+	QuoteOffset     int32           `tl:"flag:4"`
+	MonoforumPeerID InputPeer       `tl:"flag:5"`
+	TodoItemID      int32           `tl:"flag:6"`
+	PollOption      []byte          `tl:"flag:7"`
+	QuoteRich       []RichText      `tl:"flag:8"`
 }
 
 func (*InputReplyToMessage) CRC() uint32 {
-	return 0x3bd4b7c2
+	return 0x75c1ad70
 }
 
 func (*InputReplyToMessage) FlagIndex() int {
@@ -6679,6 +6786,14 @@ func (*MessageActionNoForwardsToggle) CRC() uint32 {
 
 func (*MessageActionNoForwardsToggle) ImplementsMessageAction() {}
 
+type MessageActionNoPaidMessagesTokenUsed struct{}
+
+func (*MessageActionNoPaidMessagesTokenUsed) CRC() uint32 {
+	return 0xc1d2f1c6
+}
+
+func (*MessageActionNoPaidMessagesTokenUsed) ImplementsMessageAction() {}
+
 // The price of paid messages in this chat was changed.
 type MessageActionPaidMessagesPrice struct {
 	BroadcastMessagesAllowed bool  `tl:"flag:0,encoded_in_bitflags"` // Can only be set for channels, if set indicates that direct messages were enabled, otherwise indicates that direct messages were disabled; the price of paid messages is related to the price of direct messages (aka those sent to the associated monoforum).
@@ -7909,6 +8024,29 @@ func (*MessageMediaWebPage) FlagIndex() int {
 
 func (*MessageMediaWebPage) ImplementsMessageMedia() {}
 
+type MessageMediaWidget struct {
+	IsCopy          bool `tl:"flag:0,encoded_in_bitflags"`
+	CanQuery        bool `tl:"flag:1,encoded_in_bitflags"`
+	BackgroundQuery bool `tl:"flag:2,encoded_in_bitflags"`
+	Width           int32
+	Height          int32
+	Payload         []byte
+	PublicData      string `tl:"flag:3"`
+	PublicDataHash  int64  `tl:"flag:3"`
+	ChatData        string `tl:"flag:4"`
+	WidgetID        int64  `tl:"flag:5"`
+}
+
+func (*MessageMediaWidget) CRC() uint32 {
+	return 0x2238f214
+}
+
+func (*MessageMediaWidget) FlagIndex() int {
+	return 0
+}
+
+func (*MessageMediaWidget) ImplementsMessageMedia() {}
+
 type MessagePeerVote interface {
 	tl.Object
 	ImplementsMessagePeerVote()
@@ -7973,10 +8111,11 @@ type MessageReplyHeaderObj struct {
 	QuoteOffset      int32             `tl:"flag:10"`
 	TodoItemID       int32             `tl:"flag:11"`
 	PollOption       []byte            `tl:"flag:12"`
+	QuoteRich        []RichText        `tl:"flag:14"`
 }
 
 func (*MessageReplyHeaderObj) CRC() uint32 {
-	return 0x1b97dd66
+	return 0xddb5ab75
 }
 
 func (*MessageReplyHeaderObj) FlagIndex() int {
@@ -10978,6 +11117,76 @@ func (*SpeakingInGroupCallAction) CRC() uint32 {
 
 func (*SpeakingInGroupCallAction) ImplementsSendMessageAction() {}
 
+type ShareTheme interface {
+	tl.Object
+	ImplementsShareTheme()
+}
+type InputShareThemeGift struct {
+	Stargift InputSavedStarGift
+}
+
+func (*InputShareThemeGift) CRC() uint32 {
+	return 0x3fb92b5b
+}
+
+func (*InputShareThemeGift) ImplementsShareTheme() {}
+
+type ShareThemeDefault struct{}
+
+func (*ShareThemeDefault) CRC() uint32 {
+	return 0x95ace84f
+}
+
+func (*ShareThemeDefault) ImplementsShareTheme() {}
+
+type ShareThemeEmojiBackdrop struct {
+	BackdropID int32      `tl:"flag:0"`
+	Emojis     []Reaction `tl:"flag:1"`
+}
+
+func (*ShareThemeEmojiBackdrop) CRC() uint32 {
+	return 0x64b334e1
+}
+
+func (*ShareThemeEmojiBackdrop) FlagIndex() int {
+	return 0
+}
+
+func (*ShareThemeEmojiBackdrop) ImplementsShareTheme() {}
+
+type ShareThemeGift struct {
+	Stargift StarGift
+}
+
+func (*ShareThemeGift) CRC() uint32 {
+	return 0xebece66d
+}
+
+func (*ShareThemeGift) ImplementsShareTheme() {}
+
+type ShareThemeBackdrops interface {
+	tl.Object
+	ImplementsShareThemeBackdrops()
+}
+type ShareThemeBackdropsObj struct {
+	Hash      int32
+	Backdrops []*ShareThemeBackdropOption
+}
+
+func (*ShareThemeBackdropsObj) CRC() uint32 {
+	return 0xaaeadce0
+}
+
+func (*ShareThemeBackdropsObj) ImplementsShareThemeBackdrops() {}
+
+type ShareThemeBackdropsNotModified struct{}
+
+func (*ShareThemeBackdropsNotModified) CRC() uint32 {
+	return 0x7a3f6dff
+}
+
+func (*ShareThemeBackdropsNotModified) ImplementsShareThemeBackdrops() {}
+
 type StarGift interface {
 	tl.Object
 	ImplementsStarGift()
@@ -12058,6 +12267,48 @@ func (*UpdateBotWebhookJsonQuery) CRC() uint32 {
 
 func (*UpdateBotWebhookJsonQuery) ImplementsUpdate() {}
 
+type UpdateBotWidgetCopyQuery struct {
+	QueryID    int64
+	QueryType  WidgetQueryType
+	UserID     int64
+	Data       []byte
+	WidgetID   int64
+	WalletCard *WalletCard `tl:"flag:1"`
+}
+
+func (*UpdateBotWidgetCopyQuery) CRC() uint32 {
+	return 0xfa89bef7
+}
+
+func (*UpdateBotWidgetCopyQuery) FlagIndex() int {
+	return 0
+}
+
+func (*UpdateBotWidgetCopyQuery) ImplementsUpdate() {}
+
+type UpdateBotWidgetQuery struct {
+	QueryID      int64
+	QueryType    WidgetQueryType
+	UserID       int64
+	Peer         Peer
+	MsgID        int32
+	ChatInstance int64
+	ChatType     string
+	Data         []byte
+	WidgetID     int64       `tl:"flag:0"`
+	WalletCard   *WalletCard `tl:"flag:1"`
+}
+
+func (*UpdateBotWidgetQuery) CRC() uint32 {
+	return 0xb373fe68
+}
+
+func (*UpdateBotWidgetQuery) FlagIndex() int {
+	return 0
+}
+
+func (*UpdateBotWidgetQuery) ImplementsUpdate() {}
+
 // A callback button sent via a business connection was pressed, and the button data was sent to the bot that created the button.
 type UpdateBusinessBotCallbackQuery struct {
 	QueryID        int64   // Query ID
@@ -12585,6 +12836,25 @@ func (*UpdateEditEphemeralMessage) CRC() uint32 {
 
 func (*UpdateEditEphemeralMessage) ImplementsUpdate() {}
 
+type UpdateEditForumTopic struct {
+	Peer        Peer
+	TopicID     int32
+	Title       string `tl:"flag:0"`
+	IconEmojiID int64  `tl:"flag:1"`
+	Closed      bool   `tl:"flag:2"`
+	Hidden      bool   `tl:"flag:3"`
+}
+
+func (*UpdateEditForumTopic) CRC() uint32 {
+	return 0x2366665c
+}
+
+func (*UpdateEditForumTopic) FlagIndex() int {
+	return 0
+}
+
+func (*UpdateEditForumTopic) ImplementsUpdate() {}
+
 // A message was edited
 type UpdateEditMessage struct {
 	Message  Message // The new edited message
@@ -12804,6 +13074,28 @@ func (*UpdateInlineBotCallbackQuery) FlagIndex() int {
 
 func (*UpdateInlineBotCallbackQuery) ImplementsUpdate() {}
 
+type UpdateInlineBotWidgetQuery struct {
+	QueryID         int64
+	QueryType       WidgetQueryType
+	UserID          int64
+	InlineMessageID InputBotInlineMessageID
+	ChatInstance    int64
+	ChatType        string
+	Data            []byte
+	WidgetID        int64       `tl:"flag:0"`
+	WalletCard      *WalletCard `tl:"flag:1"`
+}
+
+func (*UpdateInlineBotWidgetQuery) CRC() uint32 {
+	return 0xa5f07e08
+}
+
+func (*UpdateInlineBotWidgetQuery) FlagIndex() int {
+	return 0
+}
+
+func (*UpdateInlineBotWidgetQuery) ImplementsUpdate() {}
+
 type UpdateJoinChatWebViewDecision struct {
 	Peer    Peer
 	QueryID int64
@@ -12938,6 +13230,26 @@ func (*UpdateMessageReactions) FlagIndex() int {
 }
 
 func (*UpdateMessageReactions) ImplementsUpdate() {}
+
+type UpdateMessageWidgetData struct {
+	Peer           Peer
+	MsgID          int32
+	PublicData     string `tl:"flag:0"`
+	PublicDataHash int64  `tl:"flag:0"`
+	ChatData       string `tl:"flag:1"`
+	Pts            int32
+	PtsCount       int32
+}
+
+func (*UpdateMessageWidgetData) CRC() uint32 {
+	return 0xbbb078dd
+}
+
+func (*UpdateMessageWidgetData) FlagIndex() int {
+	return 0
+}
+
+func (*UpdateMessageWidgetData) ImplementsUpdate() {}
 
 // An admin has (un)exempted this monoforum topic from payment to send messages using account.toggleNoPaidMessagesException.
 type UpdateMonoForumNoPaidException struct {
@@ -13849,6 +14161,22 @@ func (*UpdateTranscribedAudio) FlagIndex() int {
 
 func (*UpdateTranscribedAudio) ImplementsUpdate() {}
 
+type UpdateTranscribedAudioFile struct {
+	Pending         bool `tl:"flag:0,encoded_in_bitflags"`
+	TranscriptionID int64
+	Text            string
+}
+
+func (*UpdateTranscribedAudioFile) CRC() uint32 {
+	return 0x734c2e7b
+}
+
+func (*UpdateTranscribedAudioFile) FlagIndex() int {
+	return 0
+}
+
+func (*UpdateTranscribedAudioFile) ImplementsUpdate() {}
+
 // User (user and/or userFull) information was updated.
 type UpdateUser struct {
 	UserID int64 // User ID
@@ -14199,23 +14527,26 @@ func (*URLAuthResultDefault) ImplementsURLAuthResult() {}
 
 // Details about the authorization request, for more info click here
 type URLAuthResultRequest struct {
-	RequestWriteAccess bool     `tl:"flag:0,encoded_in_bitflags"` // Whether the bot would like to send messages to the user
-	RequestPhoneNumber bool     `tl:"flag:1,encoded_in_bitflags"` // The app/website is requesting the user's phone number; if the user consents, set `share_phone_number` when calling messages.acceptUrlAuth
-	MatchCodesFirst    bool     `tl:"flag:5,encoded_in_bitflags"` // Can only be set if `match_codes` is also set; if set, clients must ask the user to select the matching code <em>before</em> showing the rest of the login confirmation UI, and must validate the selection with messages.checkUrlAuthMatchCode before proceeding
-	IsApp              bool     `tl:"flag:6,encoded_in_bitflags"` // Set if an OAuth request originated from an app rather than a website; when set, `domain` must be replaced in the confirmation prompt by `verified_app_name` (if present) or "Unverified App"
-	Bot                User     // Username of a bot, which will be used for user authorization. If not specified, the current bot's username will be assumed. The url's domain must be the same as the domain linked with the bot. See Linking your domain to the bot for more details.
-	Domain             string   // The domain name of the website on which the user will log in.
-	Browser            string   `tl:"flag:2"` // The browser the user used to make the OAuth request
-	Platform           string   `tl:"flag:2"` // The platform (operating system) of the user that made the OAuth request
-	Ip                 string   `tl:"flag:2"` // The IP address of the user making the OAuth request
-	Region             string   `tl:"flag:2"` // The location of the user, inferred from the IP address
-	MatchCodes         []string `tl:"flag:3"` // A list of emojis or codes, one of which is currently being shown on the login page of the website/app; the user must select the matching one and pass it to messages.acceptUrlAuth.`match_code`
-	UserIDHint         int64    `tl:"flag:4"` // May contain the ID of the account for which the login request was created; if it matches a logged-in account, clients should automatically switch to that account and re-invoke messages.requestUrlAuth before showing the prompt
-	VerifiedAppName    string   `tl:"flag:7"` // Can only be set if `is_app` is set and the app is verified; must replace `domain` in the confirmation prompt when present
+	RequestWriteAccess bool `tl:"flag:0,encoded_in_bitflags"`
+	RequestPhoneNumber bool `tl:"flag:1,encoded_in_bitflags"`
+	MatchCodesFirst    bool `tl:"flag:5,encoded_in_bitflags"`
+	IsApp              bool `tl:"flag:6,encoded_in_bitflags"`
+	RequestWallet      bool `tl:"flag:8,encoded_in_bitflags"`
+	Bot                User
+	Domain             string
+	Browser            string   `tl:"flag:2"`
+	Platform           string   `tl:"flag:2"`
+	Ip                 string   `tl:"flag:2"`
+	Region             string   `tl:"flag:2"`
+	MatchCodes         []string `tl:"flag:3"`
+	UserIDHint         int64    `tl:"flag:4"`
+	VerifiedAppName    string   `tl:"flag:7"`
+	TcSessionID        int64    `tl:"flag:9"`
+	TcClientID         string   `tl:"flag:10"`
 }
 
 func (*URLAuthResultRequest) CRC() uint32 {
-	return 0x3cd623ec
+	return 0xbdca6167
 }
 
 func (*URLAuthResultRequest) FlagIndex() int {
@@ -14261,6 +14592,7 @@ type UserObj struct {
 	BotCanManageBots        bool `tl:"flag2:18,encoded_in_bitflags"`
 	BotGuestchat            bool `tl:"flag2:19,encoded_in_bitflags"`
 	BotGuard                bool `tl:"flag2:20,encoded_in_bitflags"`
+	BotForumSidebar         bool `tl:"flag2:22,encoded_in_bitflags"`
 	ID                      int64
 	AccessHash              int64                `tl:"flag:0"`
 	FirstName               string               `tl:"flag:1"`
@@ -14574,6 +14906,22 @@ func (*WalletTransactionPeerAddress) FlagIndex() int {
 
 func (*WalletTransactionPeerAddress) ImplementsWalletTransactionPeer() {}
 
+type WalletTransactionPeerChannel struct {
+	ChannelID int64
+	Address   string
+	Domain    string `tl:"flag:0"`
+}
+
+func (*WalletTransactionPeerChannel) CRC() uint32 {
+	return 0x54e70c31
+}
+
+func (*WalletTransactionPeerChannel) FlagIndex() int {
+	return 0
+}
+
+func (*WalletTransactionPeerChannel) ImplementsWalletTransactionPeer() {}
+
 type WalletTransactionPeerOnramp struct {
 	Address      string
 	Domain       string `tl:"flag:0"`
@@ -14589,6 +14937,20 @@ func (*WalletTransactionPeerOnramp) FlagIndex() int {
 }
 
 func (*WalletTransactionPeerOnramp) ImplementsWalletTransactionPeer() {}
+
+type WalletTransactionPeerTelegramGift struct {
+	OwnProfile bool `tl:"flag:0,encoded_in_bitflags"`
+}
+
+func (*WalletTransactionPeerTelegramGift) CRC() uint32 {
+	return 0xf4729499
+}
+
+func (*WalletTransactionPeerTelegramGift) FlagIndex() int {
+	return 0
+}
+
+func (*WalletTransactionPeerTelegramGift) ImplementsWalletTransactionPeer() {}
 
 type WalletTransactionPeerUnsupported struct{}
 
@@ -14834,6 +15196,46 @@ func (*WebPageAttributeUniqueStarGift) CRC() uint32 {
 }
 
 func (*WebPageAttributeUniqueStarGift) ImplementsWebPageAttribute() {}
+
+type WidgetQueryType interface {
+	tl.Object
+	ImplementsWidgetQueryType()
+}
+type WidgetQueryTypeData struct {
+	WithWallet bool `tl:"flag:0,encoded_in_bitflags"`
+}
+
+func (*WidgetQueryTypeData) CRC() uint32 {
+	return 0x16d8cf0b
+}
+
+func (*WidgetQueryTypeData) FlagIndex() int {
+	return 0
+}
+
+func (*WidgetQueryTypeData) ImplementsWidgetQueryType() {}
+
+type WidgetQueryTypeSentTransaction struct {
+	Wallet  *UserWallet
+	MsgHash string
+}
+
+func (*WidgetQueryTypeSentTransaction) CRC() uint32 {
+	return 0xff3b33b4
+}
+
+func (*WidgetQueryTypeSentTransaction) ImplementsWidgetQueryType() {}
+
+type WidgetQueryTypeSignData struct {
+	Wallet   *UserWallet
+	SignData *DataJson
+}
+
+func (*WidgetQueryTypeSignData) CRC() uint32 {
+	return 0x192047dc
+}
+
+func (*WidgetQueryTypeSignData) ImplementsWidgetQueryType() {}
 
 type AccountChatThemes interface {
 	tl.Object
@@ -16821,6 +17223,32 @@ func (*MessagesStickersNotModified) CRC() uint32 {
 }
 
 func (*MessagesStickersNotModified) ImplementsMessagesStickers() {}
+
+type MessagesWidgetPublicData interface {
+	tl.Object
+	ImplementsMessagesWidgetPublicData()
+}
+type MessagesWidgetPublicDataObj struct {
+	Hash   int64
+	Data   string
+	Period int32
+}
+
+func (*MessagesWidgetPublicDataObj) CRC() uint32 {
+	return 0x4493bff
+}
+
+func (*MessagesWidgetPublicDataObj) ImplementsMessagesWidgetPublicData() {}
+
+type MessagesWidgetPublicDataNotModified struct {
+	Period int32
+}
+
+func (*MessagesWidgetPublicDataNotModified) CRC() uint32 {
+	return 0xb9196e57
+}
+
+func (*MessagesWidgetPublicDataNotModified) ImplementsMessagesWidgetPublicData() {}
 
 type PaymentsCheckCanSendGiftResult interface {
 	tl.Object

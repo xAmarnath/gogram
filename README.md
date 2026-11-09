@@ -114,7 +114,7 @@ If you'd like to support Gogram, you can consider:
   <li><strong>up-to-date</strong>: 🔄 gogram is always in sync with the latest telegram api changes and additions (<code>tl-parser</code> is used to generate the api layer).</li>
 </ul>
 
-#### Current Layer - **230** (Updated on 2026-10-11)
+#### Current Layer - **233** (Updated on 2026-11-09)
 
 ## doing stuff
 

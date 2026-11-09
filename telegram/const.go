@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	ApiVersion = 230
+	ApiVersion = 233
 	Version    = "v1.8.0-beta.14"
 
 	ModeAbridged           = "modeAbridged"
@@ -30,7 +30,7 @@ var (
 
 	regexFloodWait        = regexp.MustCompile(`Please wait (\d+) seconds before repeating the action`)
 	regexFloodWaitBasic   = regexp.MustCompile(`FLOOD_WAIT_(\d+)`)
-	regexFloodWaitPremium = regexp.MustCompile(`FLOOD_PREMIUM_WAIT_(\d+)`)
+	regexFloodWaitPremium = regexp.MustCompile(`FLOOD_PREMIUM_WAIT_(?:X\] A wait of )?(\d+)`)
 	regexPhone            = regexp.MustCompile(`^\+?[0-9]{10,13}$`)
 	proxyURLRegex         = regexp.MustCompile(`^([a-fA-F0-9]+)@([a-zA-Z0-9\.\-]+):(\d+)$`)
 
