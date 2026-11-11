@@ -1014,10 +1014,12 @@ func (c *Client) CreateExportedSender(ctx context.Context, dcID int, cdn bool, m
 		}
 
 		c.Log.Debug("initializing exported sender")
-		_, err = exported.MakeRequest(ctx, &InvokeWithLayerParams{
+		// The setup RPC is not a file query. Without this wrapper a regular
+		// DC transfer connection can steal the main connection's updates.
+		_, err = exported.MakeRequest(ctx, &InvokeWithoutUpdatesParams{Query: &InvokeWithLayerParams{
 			Layer: ApiVersion,
 			Query: initialReq,
-		})
+		}})
 
 		if err != nil {
 			lastError = fmt.Errorf("making initial request: %w", err)

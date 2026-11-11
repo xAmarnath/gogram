@@ -3121,21 +3121,9 @@ func HandleIncomingUpdates(u any, c *Client) bool {
 
 	switch upd := u.(type) {
 	case *UpdatesObj:
-		return c.manageSeq(upd.Seq, upd.Seq, func() {
-			d.SetDate(upd.Date)
-			c.Cache.UpdatePeersToCache(upd.Users, upd.Chats)
-			for _, update := range upd.Updates {
-				c.applyIncomingUpdate(update)
-			}
-		})
+		return c.applyUpdateContainer(upd.Updates, upd.Users, upd.Chats, upd.Date, upd.Seq, upd.Seq)
 	case *UpdatesCombined:
-		return c.manageSeq(upd.Seq, upd.SeqStart, func() {
-			d.SetDate(upd.Date)
-			c.Cache.UpdatePeersToCache(upd.Users, upd.Chats)
-			for _, update := range upd.Updates {
-				c.applyIncomingUpdate(update)
-			}
-		})
+		return c.applyUpdateContainer(upd.Updates, upd.Users, upd.Chats, upd.Date, upd.Seq, upd.SeqStart)
 	case *UpdateShort:
 		c.dispatcher.SetDate(upd.Date)
 		c.applyIncomingUpdate(upd.Update)
@@ -3162,6 +3150,31 @@ func HandleIncomingUpdates(u any, c *Client) bool {
 		c.Log.Debug("unhandled update type: %T", upd)
 		return true
 	}
+}
+
+// Message boxes (PTS/QTS) are independent of the outer Updates sequence.
+// Process them even when seq is stale or has a gap; only the remaining
+// updates and container date are ordered by seq. See core.telegram.org/api/updates.
+func (c *Client) applyUpdateContainer(updates []Update, users []User, chats []Chat, date, seq, seqStart int32) bool {
+	c.Cache.UpdatePeersToCache(users, chats)
+	remaining := make([]Update, 0, len(updates))
+	for _, update := range updates {
+		if update == nil {
+			continue
+		}
+		meta := extractUpdateMeta(update)
+		if meta.pts != 0 || meta.qts != 0 {
+			c.applyIncomingUpdate(update)
+		} else {
+			remaining = append(remaining, update)
+		}
+	}
+	return c.manageSeq(seq, seqStart, func() {
+		c.dispatcher.SetDate(date)
+		for _, update := range remaining {
+			c.applyIncomingUpdate(update)
+		}
+	})
 }
 
 func (c *Client) applyIncomingUpdate(update Update) {
